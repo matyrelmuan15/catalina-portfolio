@@ -5,8 +5,14 @@ use App\Livewire\Auth\RecuperarClave;
 use App\Livewire\Auth\RestablecerClave;
 use App\Livewire\Auth\VerificarSegundoFactor;
 use App\Livewire\EnConstruccion;
+use App\Livewire\Panel\Clientes\Ficha as PanelClienteFicha;
+use App\Livewire\Panel\Clientes\Listado as PanelClientesListado;
 use App\Livewire\Panel\ConfigurarSegundoFactor;
+use App\Livewire\Panel\Publicaciones\Ficha as PanelPublicacionFicha;
+use App\Livewire\Panel\Publicaciones\Listado as PanelPublicacionesListado;
 use App\Livewire\Panel\Videos\Listado as PanelVideosListado;
+use App\Livewire\Portal\Calendario as PortalCalendario;
+use App\Livewire\Portal\Publicaciones as PortalPublicaciones;
 use App\Livewire\Publico\Portada;
 use App\Models\Video;
 use Illuminate\Support\Facades\Auth;
@@ -43,8 +49,13 @@ Route::post('/salir', function () {
 Route::prefix('panel')->name('panel.')->middleware(['rol.admin', 'segundo.factor'])->group(function () {
     Route::redirect('/', '/panel/videos')->name('inicio');
     Route::get('/videos', PanelVideosListado::class)->name('videos');
-    Route::get('/clientes', EnConstruccion::class)->name('clientes')
-        ->defaults('titulo', 'Clientes')->defaults('descripcion', 'Alta y ficha de clientes. Se construye en la fase 4.');
+
+    Route::get('/clientes', PanelClientesListado::class)->name('clientes');
+    Route::get('/clientes/{cliente}', PanelClienteFicha::class)->name('clientes.ficha');
+
+    Route::get('/publicaciones', PanelPublicacionesListado::class)->name('publicaciones');
+    Route::get('/publicaciones/{publicacion}', PanelPublicacionFicha::class)->name('publicaciones.ficha');
+
     Route::get('/pedidos', EnConstruccion::class)->name('pedidos')
         ->defaults('titulo', 'Pedidos')->defaults('descripcion', 'Bandeja global de pedidos. Se construye en la fase 9.');
     Route::get('/cuenta', EnConstruccion::class)->name('cuenta')
@@ -55,10 +66,8 @@ Route::prefix('panel')->name('panel.')->middleware(['rol.admin', 'segundo.factor
 // ----------------------------------------------------------------- Portal --
 Route::prefix('portal')->name('portal.')->middleware('rol.cliente')->group(function () {
     Route::redirect('/', '/portal/calendario')->name('inicio');
-    Route::get('/calendario', EnConstruccion::class)->name('calendario')
-        ->defaults('titulo', 'Calendario')->defaults('descripcion', 'Tus fechas comprometidas. Se construye en la fase 5.');
-    Route::get('/publicaciones', EnConstruccion::class)->name('publicaciones')
-        ->defaults('titulo', 'Publicaciones')->defaults('descripcion', 'Resultados de tus publicaciones. Se construye en la fase 6.');
+    Route::get('/calendario', PortalCalendario::class)->name('calendario');
+    Route::get('/publicaciones', PortalPublicaciones::class)->name('publicaciones');
     Route::get('/pedidos', EnConstruccion::class)->name('pedidos')
         ->defaults('titulo', 'Mis pedidos')->defaults('descripcion', 'Pedís contenido y seguís el estado. Se construye en la fase 9.');
     Route::get('/metricas', EnConstruccion::class)->name('metricas')

@@ -10,11 +10,11 @@ Quien retome el trabajo —persona o asistente de IA— tiene que poder leer sol
 
 | | |
 |---|---|
-| **Fase actual** | 3 — Gestión de videos (código completo, en revisión) |
+| **Fase actual** | 6 — Publicaciones (código completo, en revisión) |
 | **Última actualización** | 31 de julio de 2026 |
 | **Entorno de staging** | Sin desplegar |
 | **Entorno de producción** | Sin desplegar |
-| **Bloqueos activos** | Sin credenciales de Railway ni de Cloudflare (de tu lado). Ninguna fase puede darse por "Cerrada" hasta que haya un despliegue en staging probado a mano, según la regla de docs/04-plan-de-fases.md. Por eso las fases 0 a 3 quedan en "En revisión". |
+| **Bloqueos activos** | Sin credenciales de Railway ni de Cloudflare (de tu lado). Ninguna fase puede darse por "Cerrada" hasta que haya un despliegue en staging probado a mano, según la regla de docs/04-plan-de-fases.md. Por eso las fases 0 a 6 quedan en "En revisión". Además: **Docker no está instalado en esta máquina** (ni el binario, ni Docker Desktop, ni WSL) — contradice lo asumido al arrancar la sesión, ver bitácora. |
 
 ### Progreso por fase
 
@@ -24,9 +24,9 @@ Quien retome el trabajo —persona o asistente de IA— tiene que poder leer sol
 | 1 — Autenticación y roles | En revisión |
 | 2 — Portfolio público | En revisión |
 | 3 — Gestión de videos | En revisión |
-| 4 — Clientes y accesos | Sin empezar |
-| 5 — Agenda y calendario | Sin empezar |
-| 6 — Publicaciones | Sin empezar |
+| 4 — Clientes y accesos | En revisión |
+| 5 — Agenda y calendario | En revisión |
+| 6 — Publicaciones | En revisión |
 | 7 — Importación y conciliación | Sin empezar |
 | 8 — Métricas del período | Sin empezar |
 | 9 — Pedidos y notificaciones | Sin empezar |
@@ -59,6 +59,17 @@ Decisiones tomadas que condicionan el desarrollo. Si una se revierte, se anota e
 | 31/07/2026 | La purga de caché de Cloudflare (`PurgadorCacheCloudflare`) no falla si faltan credenciales; deja constancia en el log | Mismo motivo que el punto anterior: no bloquear el desarrollo por infraestructura pendiente |
 | 31/07/2026 | La miniatura de Vimeo no se resuelve automáticamente (solo la de YouTube) | La API de oEmbed de Vimeo requiere una llamada de red por video; se documentó como límite conocido en `ProveedorVideo` en vez de resolverlo con una integración a medias |
 | 31/07/2026 | La imagen de Open Graph (`public/img/og-portada.jpg`) es un placeholder generado con GD, no una foto real | Todavía no hay fotos ni videos reales de Catalina (pendiente #4). Sin esto, compartir el enlace en WhatsApp no mostraría ninguna imagen |
+| 31/07/2026 | Las claves del seeder (`DatabaseSeeder`) ya no quedan fijas en el código | Se generan al azar por corrida (`Str::password(16)`) y se imprimen una sola vez en consola. Si se define `SEEDER_ADMIN_PASSWORD` / `SEEDER_CLIENTE_PASSWORD` en el `.env` local, se usa esa. Motivo: no dejar una clave real en texto plano en el repositorio, ni siquiera de datos de prueba |
+| 31/07/2026 | El alta de cliente (fase 4) genera la clave inicial al azar y la muestra una única vez en pantalla | RF-21 exige que la clave se comunique "por fuera del sistema"; generarla evita que quien complete el formulario elija una débil o la reutilice. Mismo mecanismo para restablecer clave desde la ficha (RF-23) |
+| 31/07/2026 | Las publicaciones aparecen en el mismo calendario que los eventos de agenda, pero no son editables desde ahí | RF-43: se unificó la grilla mensual (`ConstruyeCalendarioMensual`) para mostrar ambas fuentes por fecha, distinguiéndolas por estilo (`tipo-publicacion`). Se gestionan por separado, cada una desde su propio módulo |
+| 31/07/2026 | La columna "Cliente (texto)" de RF-40/RF-41 no se implementó como columna separada | El modelo de datos de docs/02 §3.1 no tiene ese campo en `publicaciones` (a diferencia de `videos`, que sí usa cliente como texto libre): la publicación siempre pertenece a un cliente real por FK. Se muestra una sola columna "Cliente" con la marca |
+| 31/07/2026 | El estado "Medida" nunca es una opción manual del formulario de publicaciones, y no retrocede si se edita una publicación ya medida | RF spec 7.3: ese estado lo pone únicamente el import de la fase 7 |
+
+---
+
+## Bug corregido en esta sesión (para quien lea el historial de commits)
+
+**Una propiedad pública de Livewire tipada como modelo Eloquent nulo (`public ?Cliente $cliente = null`) sin valor explícito se rehidrata en el ciclo de vida de Livewire como una instancia vacía y no persistida del modelo, no como `null`.** Un objeto vacío sigue siendo "truthy" en PHP, así que un patrón tan común como `->when($this->cliente, fn ($q) => $q->where('cliente_id', $this->cliente->id))` terminaba filtrando siempre por `cliente_id = null` y devolviendo cero filas — incluso en la página global de publicaciones, que no debía filtrar nada. Se detectó con una prueba que carga 200 publicaciones y se corrigió guardando solo el id (`public ?int $clienteId = null`) en vez del modelo completo, resolviendo el modelo recién en `render()` para mostrarlo. **Al usar una propiedad pública de Livewire para un modelo Eloquent que puede no existir, guardar el id, no el modelo.**
 
 ---
 
@@ -74,12 +85,45 @@ Decisiones tomadas que condicionan el desarrollo. Si una se revierte, se anota e
 | 6 | Credenciales y configuración de Cloudflare (dominio, DNS, R2, WAF, Turnstile) | 0 | Alta |
 | 7 | Confirmar el % de cobertura real en CI (no se pudo medir en esta máquina por falta de Xdebug/PCOV) | 0 | Media |
 | 8 | Resolver miniatura automática de Vimeo (hoy solo funciona para YouTube) | 3 | Baja |
+| 9 | Instalar Docker en esta máquina (o confirmar que se va a verificar 8.4 vs 8.3 en otro entorno) — no se pudo correr la batería de pruebas dentro de un contenedor | 0 | Media |
 
 ---
 
 ## Bitácora
 
-### 31 de julio de 2026 — Fases 0 a 3: fundaciones, autenticación, portfolio público y gestión de videos
+### 31 de julio de 2026 (sesión 2) — Fases 4 a 6: clientes, agenda y publicaciones
+
+**Qué se hizo**
+
+- **Antes de arrancar la fase 4**, dos verificaciones pedidas:
+  1. Se revisó que la clave del seeder del admin no quedara en texto plano en ningún archivo del repo. Estaba en `database/seeders/DatabaseSeeder.php` (no en `AVANCE.md`). Se reemplazó por generación al azar en cada corrida (`Str::password(16)`), con `SEEDER_ADMIN_PASSWORD` / `SEEDER_CLIENTE_PASSWORD` como variables opcionales para fijarla en un `.env` local. La clave se imprime una sola vez en consola al sembrar y no se guarda en ningún lado.
+  2. Se intentó correr las 47 pruebas dentro de la imagen Docker para comparar PHP 8.4 (local) contra PHP 8.3 (producción). **No se pudo: Docker no está instalado en esta máquina** (se comprobó que no existe `docker.exe`, no hay Docker Desktop instalado y WSL tampoco está instalado — "Falta instalar, ejecutá `wsl --install`"). Esto contradice lo que se asumió al iniciar la sesión. Quedó como pendiente #9 y decisión de continuar igual con las fases siguientes, a pedido tuyo.
+- **Fase 4 — Clientes y accesos.** Listado de clientes (activos por defecto, con opción de ver archivados) con buscador por marca y contacto. Alta que crea el cliente y su usuario del portal en una transacción (`DB::transaction`), con clave inicial generada al azar y mostrada una sola vez. Archivado y desarchivado desde el listado y desde la ficha. Restablecer clave desde la ficha (misma lógica: clave al azar, se muestra una vez). Ficha con las cuatro solapas (calendario, publicaciones, pedidos, métricas); pedidos y métricas siguen vacías hasta sus fases.
+- **Fase 5 — Agenda y calendario.** Tabla `agenda_eventos` (tercer modelo con `cliente_id`, con su propia prueba de aislamiento). Vista mensual con navegación entre meses (`App\Concerns\ConstruyeCalendarioMensual`, compartida entre panel y portal para no duplicar la lógica de fechas), alta desde el día o desde un botón, edición y baja —todo restringido a la administradora—, lista de próximas fechas. El portal del cliente (`App\Livewire\Portal\Calendario`) es de solo lectura: no tiene ningún método para crear, editar ni eliminar, verificado por prueba. Zona horaria `America/Argentina/Buenos_Aires` configurada en `config/app.php`; las fechas se guardan sin hora.
+- **Fase 6 — Publicaciones.** Tablas `publicaciones` (cuarto modelo con `cliente_id`) y `publicacion_metricas` (una fila por medición). Tabla ancha con las columnas de RF-40/RF-41 (desplazamiento horizontal, primera columna fija), usable tanto en `/panel/publicaciones` como, acotada a un cliente, dentro de su ficha. Ficha de detalle con el historial completo de mediciones. Alta y edición de los campos propios (grupo C) más lo esencial para planificar antes de que exista el import (fecha, plataforma, formato); el estado "Medida" nunca es una opción manual y no retrocede al editar. Vista reducida para el cliente en `/portal/publicaciones`, sin las columnas internas (verificado por prueba: no ve ID Media, copy ni hashtags de otras publicaciones ni de la propia). Las publicaciones aparecen en el calendario del cliente en su fecha, sin ser un evento de agenda y sin ser editables desde ahí. La tasa de interacción se calcula sola (`PublicacionMetrica::tasaInteraccion()`) cuando no viene en el archivo importado, y nunca si falta el alcance.
+- **Un bug real, encontrado y corregido con una prueba.** El test "la tabla se usa sin trabas con 200 publicaciones" reveló que el listado global de publicaciones filtraba silenciosamente por `cliente_id = null` y devolvía siempre cero filas. La causa: una propiedad pública de Livewire tipada como modelo Eloquent nulo se rehidrata como una instancia vacía, no como `null`, y esa instancia es "truthy". Quedó documentado en detalle más arriba, con la regla general para no repetirlo en fases futuras (Portal, Pedidos, etc. van a necesitar el mismo cuidado).
+- Batería completa: pasó de 47 a **79 pruebas, 191 aserciones, todas en verde**. Pint sin diferencias. Larastan nivel 6 sin errores.
+
+**Decisiones tomadas**
+
+Ver la tabla de "Decisiones vigentes": las filas de clientes, agenda y publicaciones son de esta sesión.
+
+**Pendiente o roto**
+
+- Sigue sin haber staging ni producción (pendientes #5 y #6): las fases 4 a 6 quedan "En revisión", no "Cerrada", por la misma razón que las fases 0 a 3.
+- No se verificó PHP 8.4 vs 8.3 dentro de un contenedor real (pendiente #9): Docker no está disponible en esta máquina.
+- Sigue sin poder abrirse un navegador en este entorno; la verificación de las pantallas nuevas se apoyó en Pest (HTTP y Livewire Testing), no en una revisión visual.
+- La columna "Cliente (texto)" de la especificación de publicaciones no se implementó como tal (ver "Decisiones vigentes"): es una diferencia menor entre el documento funcional y el modelo de datos que conviene aclarar en docs/01 cuando haya tiempo.
+- Los pedidos y las métricas siguen sin implementarse: la ficha del cliente y el portal ya tienen el lugar reservado (solapas y menú), pero el contenido es un cartel de "se completa en la fase X".
+
+**Próximo paso**
+
+1. De tu lado: seguís revisando Railway y Cloudflare más adelante, cuando haya más fases para desplegar juntas (según lo charlado).
+2. Fase 7: importación y conciliación. Es la fase con más reglas del sistema (validación, normalización de permalink, conciliación en tres niveles, idempotencia) y la documentación pide escribir las pruebas antes que el código, con archivos de ejemplo reales. Con cobertura 100 % exigida en el servicio de importación.
+
+---
+
+### 31 de julio de 2026 (sesión 1) — Fases 0 a 3: fundaciones, autenticación, portfolio público y gestión de videos
 
 **Qué se hizo**
 

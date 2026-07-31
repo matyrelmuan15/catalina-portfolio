@@ -38,6 +38,22 @@ class Cliente extends Model
     }
 
     /**
+     * @return HasMany<AgendaEvento, $this>
+     */
+    public function agendaEventos(): HasMany
+    {
+        return $this->hasMany(AgendaEvento::class);
+    }
+
+    /**
+     * @return HasMany<Publicacion, $this>
+     */
+    public function publicaciones(): HasMany
+    {
+        return $this->hasMany(Publicacion::class);
+    }
+
+    /**
      * @param  Builder<Cliente>  $query
      * @return Builder<Cliente>
      */
