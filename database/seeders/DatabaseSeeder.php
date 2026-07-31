@@ -15,6 +15,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(VideoSeeder::class);
+
         User::create([
             'name' => 'Catalina Avendaño',
             'email' => 'catalina@catalinaavendanio.com',

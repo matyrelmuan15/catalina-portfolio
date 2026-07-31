@@ -7,10 +7,20 @@ use App\Livewire\Auth\VerificarSegundoFactor;
 use App\Livewire\EnConstruccion;
 use App\Livewire\Panel\ConfigurarSegundoFactor;
 use App\Livewire\Publico\Portada;
+use App\Models\Video;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', Portada::class)->name('portada');
+
+Route::get('/sitemap.xml', function () {
+    $actualizadoEl = Video::query()->publicados()->max('updated_at') ?? now();
+
+    $xml = view('publico.sitemap', ['actualizadoEl' => $actualizadoEl])->render();
+
+    return Response::make($xml, 200, ['Content-Type' => 'application/xml']);
+})->name('sitemap');
 
 // ---------------------------------------------------------------- Ingreso --
 Route::middleware('guest')->group(function () {
