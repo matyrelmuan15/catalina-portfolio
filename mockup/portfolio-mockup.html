@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catalina Avendaño · Contenido UGC, video y fotografía</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --porcelana:#FBF6F7; --blanco:#FFFFFF; --fucsia:#E4006E; --fucsia-hondo:#A80352;
+    --tinta:#2B0A1B; --malva:#9A7F8C; --rosa-humo:#F6DCE6; --linea:#EADCE3;
+    --display:'Bodoni Moda','Didot',Georgia,serif;
+    --texto:'Jost','Century Gothic',system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--texto);background:var(--porcelana);color:var(--tinta);
+    font-weight:300;line-height:1.6;-webkit-font-smoothing:antialiased}
+  button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+  button{cursor:pointer;border:none;background:none}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:2px solid var(--fucsia);outline-offset:3px}
+  .oculto{display:none !important}
+
+  .rotulo{font-size:10px;letter-spacing:.3em;text-transform:uppercase;font-weight:500;color:var(--fucsia)}
+  .rotulo.tenue{color:var(--malva)}
+
+  .boton{display:inline-flex;align-items:center;justify-content:center;gap:10px;
+    padding:14px 26px;background:var(--fucsia);color:#fff;font-size:11px;letter-spacing:.22em;
+    text-transform:uppercase;font-weight:500;transition:background .25s,transform .25s}
+  .boton:hover{background:var(--fucsia-hondo)}
+  .boton:active{transform:translateY(1px)}
+  .boton.ancho{width:100%;margin-top:18px}
+  .boton.chico{padding:10px 18px;font-size:10px}
+  .boton.fantasma{background:transparent;color:var(--tinta);border:1px solid var(--tinta)}
+  .boton.fantasma:hover{background:var(--tinta);color:#fff}
+  .boton.claro{background:#fff;color:var(--fucsia)}
+  .boton.claro:hover{background:var(--rosa-humo)}
+
+  .campo{margin-bottom:18px}
+  .campo span{display:block;font-size:10px;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--malva);margin-bottom:8px;font-weight:500}
+  .campo input,.campo select,.campo textarea{width:100%;padding:13px 14px;background:var(--porcelana);
+    border:1px solid var(--linea);border-radius:0;font-weight:300;transition:border-color .2s,background .2s}
+  .campo input:focus,.campo select:focus,.campo textarea:focus{background:var(--blanco);
+    border-color:var(--fucsia);outline:none}
+  .fila{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .error{color:var(--fucsia);font-size:12px;margin-top:10px;min-height:18px}
+
+  /* ---------------- INGRESO ---------------- */
+  #ingreso{min-height:100vh;display:grid;place-items:center;padding:24px;color:#fff;
+    background:radial-gradient(110% 80% at 80% 8%, rgba(228,0,110,.30), transparent 62%),
+      radial-gradient(90% 70% at 8% 96%, rgba(168,3,82,.28), transparent 65%), var(--tinta)}
+  .tarjeta-ingreso{width:100%;max-width:410px;background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.14);padding:52px 42px 38px;backdrop-filter:blur(6px);
+    animation:subir .7s cubic-bezier(.2,.7,.2,1) both}
+  @keyframes subir{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .tarjeta-ingreso .marca{font-family:var(--display);font-size:32px;line-height:1;margin:14px 0 6px}
+  .tarjeta-ingreso .intro{color:rgba(255,255,255,.55);font-size:14px;margin-bottom:30px}
+  #ingreso .campo span{color:rgba(255,255,255,.5)}
+  #ingreso .campo input{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.18);color:#fff}
+  #ingreso .campo input:focus{background:rgba(255,255,255,.09);border-color:var(--fucsia)}
+  .pista{margin-top:26px;padding-top:18px;border-top:1px solid rgba(255,255,255,.14);
+    font-size:12px;color:rgba(255,255,255,.45);line-height:2}
+  .pista code{font-family:var(--texto);background:rgba(228,0,110,.22);color:#FF8FC4;
+    padding:2px 8px;letter-spacing:.06em}
+  .volver{display:block;text-align:center;margin-top:22px;font-size:10px;letter-spacing:.2em;
+    text-transform:uppercase;color:rgba(255,255,255,.4)}
+  .volver:hover{color:var(--fucsia)}
+
+  /* ---------------- SITIO PÚBLICO ---------------- */
+  .barra{position:sticky;top:0;z-index:40;display:flex;flex-direction:row;flex-wrap:nowrap;
+    align-items:center;justify-content:space-between;width:100%;gap:20px;padding:16px 32px;background:rgba(251,246,247,.86);backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--linea)}
+  .barra .marca{font-family:var(--display);font-size:20px}
+  .barra nav{display:flex;gap:30px}
+  .barra nav a{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--malva);transition:color .2s}
+  .barra nav a:hover{color:var(--fucsia)}
+  .barra .acciones{display:flex;align-items:center;gap:20px}
+  .enlace-sesion{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--malva)}
+  .enlace-sesion:hover{color:var(--fucsia)}
+
+  section{padding:110px 32px}
+  .contenedor{max-width:1180px;margin:0 auto}
+  #hero{padding:0;overflow:hidden;border-bottom:1px solid var(--linea)}
+  .hero-grilla{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1.05fr .95fr;
+    gap:48px;align-items:center;min-height:86vh;padding:70px 32px}
+  .hero-texto .rotulo{margin-bottom:26px}
+  .hero-texto h1{font-family:var(--display);font-weight:400;font-size:clamp(3.4rem,8vw,6.6rem);
+    line-height:.86;letter-spacing:-.03em}
+  .hero-texto h1 em{font-style:italic;color:var(--fucsia)}
+  .hero-texto p{max-width:430px;margin:30px 0 38px;color:var(--malva);font-size:17px}
+  .hero-ctas{display:flex;gap:14px;flex-wrap:wrap}
+
+  .tira{display:grid;grid-template-columns:1fr 1fr;gap:16px;height:76vh;overflow:hidden;
+    -webkit-mask-image:linear-gradient(transparent,#000 12%,#000 88%,transparent);
+    mask-image:linear-gradient(transparent,#000 12%,#000 88%,transparent)}
+  .columna{display:flex;flex-direction:column;gap:16px}
+  .columna.baja{animation:deriva-abajo 34s linear infinite}
+  .columna.sube{animation:deriva-arriba 34s linear infinite}
+  @keyframes deriva-abajo{from{transform:translateY(-50%)}to{transform:translateY(0)}}
+  @keyframes deriva-arriba{from{transform:translateY(0)}to{transform:translateY(-50%)}}
+  .encuadre{position:relative;aspect-ratio:9/16;flex:none;overflow:hidden;border:1px solid rgba(255,255,255,.5)}
+  .encuadre .glifo{position:absolute;inset:auto 12px 12px;color:rgba(255,255,255,.9);
+    font-size:9px;letter-spacing:.2em;text-transform:uppercase}
+  @media (prefers-reduced-motion:reduce){.columna.baja,.columna.sube,.tarjeta-ingreso{animation:none}}
+
+  .cabecera-seccion{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;
+    flex-wrap:wrap;margin-bottom:40px}
+  .cabecera-seccion h2{font-family:var(--display);font-size:clamp(2.2rem,4.4vw,3.4rem);
+    font-weight:400;line-height:1;letter-spacing:-.02em;margin-top:14px}
+  .cabecera-seccion p{color:var(--malva);max-width:380px;font-size:15px}
+  .filtros{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:34px}
+  .filtro{padding:9px 18px;border:1px solid var(--linea);font-size:10px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--malva);transition:all .2s}
+  .filtro:hover{border-color:var(--fucsia);color:var(--fucsia)}
+  .filtro.activo{background:var(--fucsia);border-color:var(--fucsia);color:#fff}
+
+  .grilla-trabajos{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  .trabajo{position:relative;aspect-ratio:9/16;overflow:hidden;cursor:pointer;
+    border:1px solid transparent;transition:border-color .3s}
+  .trabajo:hover{border-color:var(--fucsia)}
+  .trabajo .lienzo{position:absolute;inset:0;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+  .trabajo:hover .lienzo{transform:scale(1.05)}
+  .trabajo .velo{position:absolute;inset:0;opacity:.85;transition:opacity .3s;
+    background:linear-gradient(to top,rgba(43,10,27,.78),rgba(43,10,27,.05) 55%)}
+  .trabajo:hover .velo{opacity:1}
+  .trabajo .pie{position:absolute;inset:auto 0 0;padding:18px;color:#fff}
+  .trabajo .pie .cliente{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.7)}
+  .trabajo .pie .titulo{font-family:var(--display);font-size:19px;line-height:1.15;margin-top:6px}
+  .trabajo .marca-destacado{position:absolute;top:12px;left:12px;background:var(--fucsia);color:#fff;
+    font-size:8px;letter-spacing:.2em;text-transform:uppercase;padding:5px 9px}
+  .trabajo .reproducir{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.85);
+    width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.14);
+    border:1px solid rgba(255,255,255,.6);display:grid;place-items:center;opacity:0;transition:all .35s}
+  .trabajo:hover .reproducir{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  .reproducir svg{width:14px;height:14px;fill:#fff;margin-left:2px}
+  .vacio-galeria{grid-column:1/-1;border:1px dashed var(--linea);padding:60px;text-align:center;
+    color:var(--malva);font-size:14px}
+
+  #servicios{background:var(--blanco);border-block:1px solid var(--linea)}
+  .grupos{display:grid;grid-template-columns:repeat(3,1fr)}
+  .grupo{padding:38px 32px;border-left:1px solid var(--linea)}
+  .grupo:first-child{padding-left:0;border-left:none}
+  .grupo:last-child{padding-right:0}
+  .grupo h3{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--fucsia);
+    font-weight:500;margin-bottom:24px}
+  .grupo ul{list-style:none}
+  .grupo li{font-family:var(--display);font-size:26px;line-height:1.25;padding:12px 0;
+    border-bottom:1px solid var(--linea);transition:color .2s,padding-left .25s}
+  .grupo li:hover{color:var(--fucsia);padding-left:8px}
+  .grupo li:last-child{border-bottom:none}
+
+  .sobre{display:grid;grid-template-columns:.85fr 1.15fr;gap:60px;align-items:center}
+  .retrato{aspect-ratio:4/5;position:relative;background:linear-gradient(150deg,#F6DCE6,#E4006E 55%,#A80352)}
+  .retrato span{position:absolute;inset:auto 0 20px;text-align:center;color:rgba(255,255,255,.85);
+    font-size:9px;letter-spacing:.24em;text-transform:uppercase}
+  .sobre h2{font-family:var(--display);font-size:clamp(2rem,3.6vw,2.9rem);font-weight:400;
+    line-height:1.08;letter-spacing:-.02em;margin:18px 0 22px}
+  .sobre p{color:var(--malva);max-width:520px;margin-bottom:16px}
+  .datos{display:flex;gap:44px;margin-top:34px;flex-wrap:wrap}
+  .dato .n{font-family:var(--display);font-size:44px;line-height:1;color:var(--fucsia)}
+  .dato .r{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--malva);margin-top:8px}
+
+  #contacto{background:var(--fucsia);color:#fff}
+  #contacto .rotulo{color:rgba(255,255,255,.75)}
+  #contacto h2{font-family:var(--display);font-size:clamp(2.6rem,6vw,5rem);font-weight:400;
+    line-height:.96;letter-spacing:-.03em;margin:22px 0 30px;max-width:800px}
+  #contacto h2 em{font-style:italic}
+  .vias{display:flex;gap:40px;flex-wrap:wrap;margin-top:44px;padding-top:30px;
+    border-top:1px solid rgba(255,255,255,.3)}
+  .via{display:block;transition:opacity .2s}
+  a.via:hover{opacity:.72}
+  .via .r{font-size:9px;letter-spacing:.24em;text-transform:uppercase;opacity:.7}
+  .via .v{font-size:17px;margin-top:6px}
+  footer{padding:30px 32px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--malva);
+    border-top:1px solid var(--linea)}
+
+  /* ---------------- MODALES ---------------- */
+  .telon{position:fixed;inset:0;z-index:80;background:rgba(43,10,27,.72);backdrop-filter:blur(6px);
+    display:grid;place-items:center;padding:24px;animation:aparecer .25s both}
+  @keyframes aparecer{from{opacity:0}to{opacity:1}}
+  .visor{position:relative;background:var(--blanco);width:100%;max-width:860px;max-height:88vh;
+    overflow:auto;display:grid;grid-template-columns:300px 1fr}
+  .visor .marco{position:relative;aspect-ratio:9/16}
+  .visor .marco span{position:absolute;inset:auto 0 18px;text-align:center;color:rgba(255,255,255,.9);
+    font-size:9px;letter-spacing:.2em;text-transform:uppercase}
+  .visor .info{padding:40px 38px}
+  .visor .info h3{font-family:var(--display);font-size:32px;font-weight:400;line-height:1.05;margin:14px 0 16px}
+  .visor .info p{color:var(--malva);font-size:15px;margin-bottom:26px}
+  .visor .meta{display:flex;gap:32px;flex-wrap:wrap;padding-top:22px;border-top:1px solid var(--linea)}
+  .visor .meta .r{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--malva)}
+  .visor .meta .v{font-size:14px;margin-top:5px}
+  .hoja{position:relative;background:var(--blanco);width:100%;max-width:660px;max-height:90vh;
+    overflow:auto;padding:38px 40px}
+  .hoja h3{font-family:var(--display);font-size:30px;font-weight:400;margin-bottom:6px}
+  .hoja .guia{color:var(--malva);font-size:13px;margin-bottom:28px}
+  .pie-hoja{display:flex;gap:12px;justify-content:flex-end;padding-top:24px;border-top:1px solid var(--linea)}
+  .cerrar{position:absolute;top:18px;right:20px;width:36px;height:36px;border:1px solid var(--linea);
+    display:grid;place-items:center;font-size:16px;color:var(--malva);background:var(--blanco)}
+  .cerrar:hover{border-color:var(--fucsia);color:var(--fucsia)}
+  .tonos{display:flex;gap:10px;flex-wrap:wrap}
+  .tono{width:44px;height:44px;border:2px solid transparent;transition:border-color .2s}
+  .tono.sel{border-color:var(--tinta)}
+  .interruptores{display:flex;gap:26px;flex-wrap:wrap;margin:6px 0 28px}
+  .interruptor{display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer}
+  .interruptor input{width:16px;height:16px;accent-color:var(--fucsia)}
+
+  /* ---------------- ARMAZÓN DE PANELES ---------------- */
+  .armazon{min-height:100vh;display:grid;grid-template-columns:250px 1fr;background:var(--blanco)}
+  .lateral{background:var(--tinta);color:#fff;padding:30px 24px;display:flex;flex-direction:column}
+  .lateral .marca{font-family:var(--display);font-size:22px}
+  .lateral .sub{font-size:9px;letter-spacing:.26em;text-transform:uppercase;
+    color:rgba(255,255,255,.45);margin-top:6px}
+  .menu{margin-top:44px;display:flex;flex-direction:column;gap:2px}
+  .menu button{text-align:left;padding:12px 14px;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:rgba(255,255,255,.6);transition:all .2s}
+  .menu button:hover{color:#fff;background:rgba(255,255,255,.06)}
+  .menu button.activo{background:var(--fucsia);color:#fff}
+  .lateral .abajo{margin-top:auto;display:flex;flex-direction:column;gap:10px;padding-top:26px;
+    border-top:1px solid rgba(255,255,255,.14)}
+  .lateral .abajo button,.lateral .abajo a{text-align:left;font-size:10px;letter-spacing:.2em;
+    text-transform:uppercase;color:rgba(255,255,255,.55)}
+  .lateral .abajo button:hover,.lateral .abajo a:hover{color:var(--fucsia)}
+  .area{padding:36px 40px;overflow:auto}
+  .encabezado-panel{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;
+    flex-wrap:wrap;margin-bottom:30px}
+  .encabezado-panel h1{font-family:var(--display);font-size:36px;font-weight:400;letter-spacing:-.02em;line-height:1}
+  .encabezado-panel p{color:var(--malva);font-size:13px;margin-top:8px}
+
+  .metricas{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--linea);
+    border:1px solid var(--linea);margin-bottom:30px}
+  .metrica{background:var(--blanco);padding:20px 22px}
+  .metrica .n{font-family:var(--display);font-size:34px;line-height:1}
+  .metrica .r{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--malva);margin-top:8px}
+  .metrica.destacada .n{color:var(--fucsia)}
+  .metrica .delta{font-size:11px;color:var(--malva);margin-top:6px}
+  .metrica .delta.sube{color:var(--fucsia)}
+
+  .herramientas{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:22px}
+  .herramientas input,.herramientas select{padding:11px 14px;border:1px solid var(--linea);
+    background:var(--porcelana);font-weight:300;font-size:14px}
+  .herramientas input{min-width:230px}
+  .herramientas .espacio{flex:1}
+
+  table{width:100%;border-collapse:collapse}
+  th{text-align:left;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--malva);
+    font-weight:500;padding:0 14px 12px;border-bottom:1px solid var(--linea)}
+  td{padding:14px;border-bottom:1px solid var(--linea);font-size:14px;vertical-align:middle}
+  tr:hover td{background:var(--porcelana)}
+  .celda-video{display:flex;align-items:center;gap:14px}
+  .mini{width:40px;height:56px;flex:none}
+  .celda-video .t{font-weight:400}
+  .celda-video .c{font-size:11px;color:var(--malva);letter-spacing:.1em;text-transform:uppercase}
+  .etiqueta{display:inline-block;font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+    padding:5px 10px;border:1px solid var(--linea);color:var(--malva)}
+  .estado{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+  .punto{width:7px;height:7px;border-radius:50%;background:var(--malva)}
+  .punto.vivo{background:var(--fucsia)}
+  .acciones-fila{display:flex;gap:6px;justify-content:flex-end}
+  .icono{width:32px;height:32px;border:1px solid var(--linea);display:grid;place-items:center;
+    color:var(--malva);font-size:13px;transition:all .2s}
+  .icono:hover{border-color:var(--fucsia);color:var(--fucsia)}
+  .estrella.on{color:var(--fucsia);border-color:var(--rosa-humo);background:var(--rosa-humo)}
+  .sin-datos{padding:56px;text-align:center;color:var(--malva);border:1px dashed var(--linea);font-size:14px}
+  .inicial{width:38px;height:38px;flex:none;display:grid;place-items:center;color:#fff;
+    font-family:var(--display);font-size:17px}
+
+  /* subpestañas del detalle de cliente */
+  .subpestanas{display:flex;gap:0;border-bottom:1px solid var(--linea);margin-bottom:28px}
+  .subpestanas button{padding:12px 20px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--malva);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s}
+  .subpestanas button:hover{color:var(--fucsia)}
+  .subpestanas button.activo{color:var(--tinta);border-bottom-color:var(--fucsia)}
+  .migas{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--malva);margin-bottom:14px}
+  .migas button{color:var(--fucsia)}
+
+  /* ---------------- CALENDARIO ---------------- */
+  .cal-cabecera{display:flex;align-items:center;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+  .cal-cabecera h3{font-family:var(--display);font-size:26px;font-weight:400;min-width:220px}
+  .cal-nav{display:flex;gap:6px}
+  .cal-nav button{width:34px;height:34px;border:1px solid var(--linea);color:var(--malva);
+    display:grid;place-items:center}
+  .cal-nav button:hover{border-color:var(--fucsia);color:var(--fucsia)}
+  .cal-envoltorio{overflow-x:auto}
+  .cal-grilla{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--linea);
+    border:1px solid var(--linea)}
+  .cal-dia-nombre{background:var(--porcelana);padding:10px;text-align:center;font-size:9px;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--malva)}
+  .cal-dia{background:var(--blanco);min-height:104px;padding:8px;position:relative;transition:background .2s}
+  .cal-dia.otro{background:var(--porcelana);opacity:.55}
+  .cal-dia .num{font-size:12px;color:var(--malva)}
+  .cal-dia.hoy .num{background:var(--fucsia);color:#fff;width:22px;height:22px;display:grid;
+    place-items:center;border-radius:50%;font-weight:500}
+  .cal-dia .agregar{position:absolute;top:6px;right:6px;width:20px;height:20px;font-size:14px;
+    color:var(--malva);opacity:0;transition:opacity .2s}
+  .cal-dia:hover .agregar{opacity:1}
+  .cal-dia .agregar:hover{color:var(--fucsia)}
+  .evento{display:block;width:100%;text-align:left;margin-top:5px;padding:5px 7px;font-size:11px;
+    line-height:1.3;border-left:3px solid var(--fucsia);background:var(--rosa-humo);color:var(--tinta)}
+  .evento small{display:block;font-size:8px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--fucsia-hondo);margin-bottom:2px}
+  .evento.tipo-entrega{border-left-color:var(--tinta);background:#F2EDEF}
+  .evento.tipo-entrega small{color:var(--tinta)}
+  .evento.tipo-publicacion{border-left-color:#F5A8C8;background:#FDF2F6}
+  .evento.tipo-publicacion small{color:#C4437E}
+  .evento.tipo-reunion{border-left-color:var(--malva);background:#F5F1F3}
+  .evento.tipo-reunion small{color:var(--malva)}
+    .proximas{margin-top:28px}
+  .proximas h4{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--malva);margin-bottom:14px}
+  .proxima{display:flex;gap:18px;align-items:center;padding:14px 0;border-bottom:1px solid var(--linea)}
+  .proxima .f{font-family:var(--display);font-size:22px;min-width:78px;color:var(--fucsia)}
+  .proxima .t{font-size:15px}
+  .proxima .d{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--malva)}
+  .proxima .acc{margin-left:auto;display:flex;gap:6px}
+
+  /* ---------------- PEDIDOS ---------------- */
+  .pedido{border:1px solid var(--linea);padding:22px 24px;margin-bottom:14px;display:grid;
+    grid-template-columns:96px 1fr;gap:22px}
+  .pedido .adjunto{width:96px;height:96px;background:var(--porcelana);border:1px solid var(--linea);
+    display:grid;place-items:center;font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--malva);text-align:center;overflow:hidden}
+  .pedido .adjunto img{width:100%;height:100%;object-fit:cover}
+  .pedido .cab{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+  .pedido .fecha{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--malva)}
+  .pedido p{font-size:15px;color:var(--tinta);margin-bottom:12px}
+  .insignia{font-size:9px;letter-spacing:.18em;text-transform:uppercase;padding:6px 12px;
+    border:1px solid var(--linea);color:var(--malva)}
+  .insignia.nuevo{background:var(--fucsia);border-color:var(--fucsia);color:#fff}
+  .insignia.curso{border-color:var(--fucsia);color:var(--fucsia)}
+  .insignia.entregado{background:var(--porcelana)}
+  .respuesta{background:var(--porcelana);border-left:3px solid var(--fucsia);padding:12px 16px;
+    font-size:14px;color:var(--tinta)}
+  .respuesta strong{display:block;font-size:9px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--fucsia);font-weight:500;margin-bottom:5px}
+  .previsualizacion{width:120px;height:120px;border:1px solid var(--linea);object-fit:cover;margin-top:10px}
+
+  /* ---------------- MÉTRICAS DEL CLIENTE ---------------- */
+  .banda-notion{display:flex;align-items:center;gap:14px;padding:14px 18px;border:1px solid var(--linea);
+    background:var(--porcelana);margin-bottom:26px;font-size:13px;color:var(--malva);flex-wrap:wrap}
+  .banda-notion .marca-fuente{font-size:9px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--fucsia);border:1px solid var(--rosa-humo);background:var(--rosa-humo);padding:5px 10px}
+  .grafico{display:flex;align-items:flex-end;gap:14px;height:190px;padding:22px;border:1px solid var(--linea)}
+  .barra-dato{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;
+    gap:8px;height:100%}
+  .barra-dato .relleno{width:100%;background:linear-gradient(180deg,#FF6FB2,var(--fucsia));transition:height .6s}
+  .barra-dato .et{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--malva)}
+  .barra-dato .val{font-size:11px;color:var(--tinta)}
+
+  /* tabla ancha de publicaciones */
+  .tabla-ancha{overflow-x:auto;border:1px solid var(--linea)}
+  table.ancha{min-width:2600px}
+  table.ancha th,table.ancha td{white-space:nowrap;font-size:13px}
+  table.ancha th:first-child,table.ancha td:first-child{position:sticky;left:0;z-index:3;
+    background:var(--blanco);border-right:1px solid var(--linea);max-width:230px;
+    overflow:hidden;text-overflow:ellipsis}
+  table.ancha thead th{background:var(--porcelana)}
+  table.ancha tr:hover td:first-child{background:var(--porcelana)}
+  table.ancha td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .enlace-mini{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--fucsia);
+    border-bottom:1px solid var(--rosa-humo)}
+  .enlace-mini:hover{border-bottom-color:var(--fucsia)}
+  .insignia.planificada{border-color:var(--linea);color:var(--malva)}
+  .insignia.produccion{border-color:var(--malva);color:var(--malva)}
+  .insignia.aprobada{border-color:var(--fucsia);color:var(--fucsia)}
+  .insignia.publicada{background:var(--rosa-humo);border-color:var(--rosa-humo);color:var(--fucsia-hondo)}
+  .insignia.medida{background:var(--fucsia);border-color:var(--fucsia);color:#fff}
+  .resumen-import{background:var(--porcelana);border-left:3px solid var(--fucsia);padding:14px 18px;
+    font-size:13px;line-height:1.9;margin-bottom:16px}
+
+  .bloque-json{background:var(--tinta);color:#F6DCE6;padding:18px 20px;font-family:ui-monospace,
+    'Cascadia Code',Consolas,monospace;font-size:12px;line-height:1.7;white-space:pre;overflow-x:auto;
+    max-height:340px;overflow-y:auto}
+  .aviso-error{background:#FDF2F6;border-left:3px solid var(--fucsia);padding:12px 16px;
+    font-size:13px;color:var(--fucsia-hondo);margin-bottom:16px}
+  .aviso-ok{background:var(--porcelana);border-left:3px solid var(--tinta);padding:12px 16px;
+    font-size:13px;margin-bottom:16px}
+  .zona-archivo{border:1px dashed var(--linea);padding:20px;text-align:center;color:var(--malva);
+    font-size:13px}
+
+  /* ---------------- BARRA DE PRUEBA ---------------- */
+  #barraPrueba{position:fixed;left:18px;bottom:18px;z-index:200;display:flex;align-items:center;gap:8px;
+    background:var(--tinta);color:#fff;padding:9px 12px;box-shadow:0 18px 40px -24px rgba(0,0,0,.8)}
+  #barraPrueba .r{font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.45);
+    max-width:80px;line-height:1.5}
+  #barraPrueba button{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.75);
+    border:1px solid rgba(255,255,255,.2);padding:7px 10px;transition:all .2s}
+  #barraPrueba button:hover{border-color:var(--fucsia);color:#fff;background:var(--fucsia)}
+  .aviso{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:120;background:var(--tinta);
+    color:#fff;padding:14px 26px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    animation:aparecer .2s both}
+
+  /* ---------------- RESPONSIVE ---------------- */
+  @media (max-width:1000px){
+    .hero-grilla{grid-template-columns:1fr;min-height:auto;gap:40px}
+    .tira{height:52vh}
+    .grilla-trabajos{grid-template-columns:repeat(2,1fr)}
+    .grupos{grid-template-columns:1fr}
+    .grupo{padding:28px 0;border-left:none;border-top:1px solid var(--linea)}
+    .grupo:first-child{border-top:none;padding-top:0}
+    .sobre{grid-template-columns:1fr;gap:36px}
+    .visor{grid-template-columns:1fr}
+    .visor .marco{aspect-ratio:16/11}
+    .armazon{grid-template-columns:1fr}
+    .lateral{flex-direction:row;align-items:center;gap:16px;padding:14px 18px;flex-wrap:wrap}
+    .menu{margin-top:0;flex-direction:row;margin-left:auto;flex-wrap:wrap}
+    .lateral .abajo{margin-top:0;flex-direction:row;padding-top:0;border:none;gap:16px}
+    .metricas{grid-template-columns:repeat(2,1fr)}
+    .barra nav{display:none}
+    section{padding:70px 22px}
+    .area{padding:24px 20px}
+    .tabla-envoltorio{overflow-x:auto}
+    table{min-width:740px}
+    .cal-grilla{min-width:660px}
+    .pedido{grid-template-columns:1fr}
+  }
+  @media (max-width:560px){
+    .grilla-trabajos{grid-template-columns:1fr}
+    .fila{grid-template-columns:1fr}
+    #barraPrueba .r{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== SITIO PÚBLICO ==================== -->
+<div id="sitio">
+  <header class="barra">
+    <div class="marca">Catalina Avendaño</div>
+    <nav>
+      <a href="#trabajos">Trabajos</a>
+      <a href="#servicios">Servicios</a>
+      <a href="#sobre">Sobre mí</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+    <div class="acciones">
+      <button class="enlace-sesion" onclick="irA('/ingresar')">Iniciar sesión</button>
+      <a class="boton" href="https://wa.me/542931403502" target="_blank" rel="noopener" style="padding:11px 20px">Escribime</a>
+    </div>
+  </header>
+
+  <section id="hero">
+    <div class="hero-grilla">
+      <div class="hero-texto">
+        <div class="rotulo">Contenido UGC · Viedma, Río Negro</div>
+        <h1>Marcas que<br>se ven <em>reales</em></h1>
+        <p>Video vertical, fotografía y estrategia digital para marcas que quieren mostrarse cerca y vender mejor.</p>
+        <div class="hero-ctas">
+          <a class="boton" href="#trabajos">Ver trabajos</a>
+          <a class="boton fantasma" href="#contacto">Escribime</a>
+        </div>
+      </div>
+      <div class="tira" id="tira"></div>
+    </div>
+  </section>
+
+  <section id="trabajos">
+    <div class="contenedor">
+      <div class="cabecera-seccion">
+        <div><div class="rotulo tenue">Selección</div><h2>Trabajos</h2></div>
+        <p>Piezas verticales pensadas para Reels, TikTok y campañas pagas.</p>
+      </div>
+      <div class="filtros" id="filtros"></div>
+      <div class="grilla-trabajos" id="galeria"></div>
+    </div>
+  </section>
+
+  <section id="servicios">
+    <div class="contenedor">
+      <div class="cabecera-seccion">
+        <div><div class="rotulo tenue">Qué hago</div><h2>Servicios</h2></div>
+        <p>Podés contratarme para una pieza suelta o para todo el ciclo: idea, producción y pauta.</p>
+      </div>
+      <div class="grupos">
+        <div class="grupo"><h3>Frente a cámara</h3>
+          <ul><li>Videos UGC</li><li>Videos lifestyle</li><li>Modelaje</li></ul></div>
+        <div class="grupo"><h3>Producción</h3>
+          <ul><li>Videos de marketing</li><li>Grabación y edición</li><li>Fotografía</li><li>Diseño gráfico</li></ul></div>
+        <div class="grupo"><h3>Crecimiento</h3>
+          <ul><li>Manejo de redes</li><li>Meta Ads</li><li>Google Ads</li><li>Sitios web a medida</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="sobre">
+    <div class="contenedor sobre">
+      <div class="retrato"><span>Foto de perfil</span></div>
+      <div>
+        <div class="rotulo tenue">Sobre mí</div>
+        <h2>Hago contenido que no parece publicidad.</h2>
+        <p>Trabajo desde Viedma con marcas de indumentaria, gastronomía, belleza y servicios. Grabo, edito y publico: entrego el video listo para subir, con los formatos y las medidas que cada red necesita.</p>
+        <p>Si además querés que el contenido trabaje en pauta, me ocupo de las campañas en Meta y Google, y del calendario de publicaciones.</p>
+        <div class="datos">
+          <div class="dato"><div class="n">48</div><div class="r">Marcas</div></div>
+          <div class="dato"><div class="n">320</div><div class="r">Videos entregados</div></div>
+          <div class="dato"><div class="n">5</div><div class="r">Años de trabajo</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contacto">
+    <div class="contenedor">
+      <div class="rotulo">Siguiente paso</div>
+      <h2>Contame qué necesitás y te paso una <em>propuesta</em> en 48 horas.</h2>
+      <a class="boton claro" href="https://wa.me/542931403502" target="_blank" rel="noopener">Escribir por WhatsApp</a>
+      <div class="vias">
+        <a class="via" href="https://wa.me/542931403502" target="_blank" rel="noopener">
+          <div class="r">WhatsApp</div><div class="v">2931 40-3502</div></a>
+        <a class="via" href="mailto:catalinaavendanio@gmail.com">
+          <div class="r">Correo</div><div class="v">catalinaavendanio@gmail.com</div></a>
+        <a class="via" href="https://instagram.com/kaatyavendanio" target="_blank" rel="noopener">
+          <div class="r">Instagram</div><div class="v">@kaatyavendanio</div></a>
+        <div class="via"><div class="r">Dónde estoy</div><div class="v">Viedma, Río Negro</div></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026 Catalina Avendaño · Viedma, Río Negro</span>
+    <span>catalinaavendanio@gmail.com · mockup v6</span>
+  </footer>
+</div>
+
+<!-- ==================== INGRESO ==================== -->
+<div id="ingreso" class="oculto">
+  <div class="tarjeta-ingreso">
+    <div class="rotulo">Acceso</div>
+    <div class="marca">Iniciar sesión</div>
+    <p class="intro">Entrá a tu calendario, tus pedidos y tus métricas.</p>
+    <div class="campo"><span>Correo</span>
+      <input id="correo" type="email" placeholder="tucorreo@marca.com" autocomplete="username"></div>
+    <div class="campo"><span>Clave</span>
+      <input id="clave" type="password" placeholder="••••••••" autocomplete="current-password"></div>
+    <div class="error" id="errorIngreso"></div>
+    <button class="boton ancho" onclick="entrar()">Entrar</button>
+    <div class="pista">
+      Accesos de prueba<br>
+      Administración: <code>catalina</code> · <code>admin</code><br>
+      Cliente: <code>bloom</code> · <code>cliente</code>
+    </div>
+    <a class="volver" href="#/" onclick="irA('/')">← Volver al portfolio</a>
+  </div>
+</div>
+
+<!-- ==================== PANEL ADMIN ==================== -->
+<div id="panel" class="armazon oculto">
+  <aside class="lateral">
+    <div><div class="marca">Catalina</div><div class="sub">Administración</div></div>
+    <div class="menu" id="menuAdmin">
+      <button class="activo" onclick="pestanaAdmin('videos',this)">Videos</button>
+      <button onclick="pestanaAdmin('clientes',this)">Clientes</button>
+      <button onclick="pestanaAdmin('pedidos',this)">Pedidos</button>
+      <button onclick="pestanaAdmin('cuenta',this)">Cuenta</button>
+    </div>
+    <div class="abajo">
+      <button onclick="irA('/')">← Ver el sitio</button>
+      <button onclick="salir()">Cerrar sesión</button>
+    </div>
+  </aside>
+  <main class="area" id="areaAdmin"></main>
+</div>
+
+<!-- ==================== PORTAL DE CLIENTE ==================== -->
+<div id="portal" class="armazon oculto">
+  <aside class="lateral">
+    <div><div class="marca" id="marcaCliente">Cliente</div><div class="sub">Portal de cliente</div></div>
+    <div class="menu" id="menuCliente">
+      <button class="activo" onclick="pestanaCliente('calendario',this)">Calendario</button>
+      <button onclick="pestanaCliente('publicaciones',this)">Publicaciones</button>
+      <button onclick="pestanaCliente('pedidos',this)">Mis pedidos</button>
+      <button onclick="pestanaCliente('metricas',this)">Métricas</button>
+    </div>
+    <div class="abajo">
+      <a href="https://wa.me/542931403502" target="_blank" rel="noopener">Escribir a Catalina</a>
+      <button onclick="salir()">Cerrar sesión</button>
+    </div>
+  </aside>
+  <main class="area" id="areaCliente"></main>
+</div>
+
+<div id="barraPrueba">
+  <div class="r">Vista de prueba</div>
+  <button onclick="irA('/')">Portfolio</button>
+  <button onclick="irA('/ingresar')">Ingresar</button>
+</div>
+<div id="capaModal"></div>
+<div id="capaAviso"></div>
+
+<script>
+/* ============ DATOS DE EJEMPLO ============ */
+const HOY = '2026-07-31';
+const TONOS = {
+  fucsia:'linear-gradient(155deg,#FF4FA3,#E4006E 50%,#8E0246)',
+  rosa:'linear-gradient(155deg,#FFE3EE,#F5A8C8 55%,#E4006E)',
+  ciruela:'linear-gradient(155deg,#7A2350,#2B0A1B)',
+  arena:'linear-gradient(155deg,#F3E4DC,#D8B7A6 55%,#A8636B)',
+  coral:'linear-gradient(155deg,#FFC9B8,#FF7A88 50%,#E4006E)',
+  nocturno:'linear-gradient(155deg,#3C2C43,#160910)'
+};
+const CATEGORIAS = ['UGC','Marketing','Lifestyle','Fotografía','Modelaje','Redes'];
+const TIPOS = ['Grabación','Entrega','Reunión'];
+const ESTADOS_PUB = ['Planificada','En producción','Aprobada','Publicada','Medida'];
+const PILARES = ['Producto','Educativo','Detrás de escena','Testimonio','Promoción'];
+const CLASE_TIPO = {'Grabación':'', 'Entrega':'tipo-entrega', 'Publicación':'tipo-publicacion', 'Reunión':'tipo-reunion'};
+
+let clientes = [
+  {id:1, marca:'Bloom Skincare', contacto:'Julieta Ruiz', correo:'bloom', clave:'cliente', tono:'rosa'},
+  {id:2, marca:'Casa Nima', contacto:'Marcos Peña', correo:'nima', clave:'cliente', tono:'ciruela'},
+  {id:3, marca:'Nube Café', contacto:'Sol Ibarra', correo:'nube', clave:'cliente', tono:'arena'},
+  {id:4, marca:'Duna Joyas', contacto:'Vera Lauría', correo:'duna', clave:'cliente', tono:'nocturno'}
+];
+
+let videos = [
+  {id:1, titulo:'Rutina de mañana', cliente:'Bloom Skincare', categoria:'UGC', fecha:'2026-06-18', tono:'rosa', destacado:true, publicado:true, enlace:'https://vimeo.com/000001', descripcion:'Tres piezas verticales de 25 segundos para el lanzamiento del sérum. Guion, grabación y edición.'},
+  {id:2, titulo:'Colección otoño', cliente:'Casa Nima', categoria:'Modelaje', fecha:'2026-06-02', tono:'ciruela', destacado:false, publicado:true, enlace:'https://vimeo.com/000002', descripcion:'Campaña de temporada: modelaje y fotografía de producto en locación.'},
+  {id:3, titulo:'Café de especialidad', cliente:'Nube Café', categoria:'Lifestyle', fecha:'2026-05-24', tono:'arena', destacado:true, publicado:true, enlace:'https://vimeo.com/000003', descripcion:'Serie lifestyle para Reels con enfoque en textura y sonido ambiente.'},
+  {id:4, titulo:'Antes y después', cliente:'Estudio Lume', categoria:'Marketing', fecha:'2026-05-10', tono:'fucsia', destacado:false, publicado:true, enlace:'https://vimeo.com/000004', descripcion:'Video testimonial editado en dos versiones: orgánico y para pauta en Meta.'},
+  {id:5, titulo:'Editorial de verano', cliente:'Sal & Arena', categoria:'Fotografía', fecha:'2026-04-28', tono:'coral', destacado:false, publicado:true, enlace:'https://vimeo.com/000005', descripcion:'Producción fotográfica de 40 tomas más 6 clips verticales de respaldo.'},
+  {id:6, titulo:'Unboxing accesorios', cliente:'Duna Joyas', categoria:'UGC', fecha:'2026-04-12', tono:'nocturno', destacado:false, publicado:true, enlace:'https://vimeo.com/000006', descripcion:'Formato unboxing con locución propia y subtítulos quemados.'},
+  {id:7, titulo:'Detrás de escena', cliente:'Casa Nima', categoria:'Redes', fecha:'2026-03-30', tono:'rosa', destacado:false, publicado:true, enlace:'https://vimeo.com/000007', descripcion:'Contenido de relleno mensual para sostener el calendario de publicaciones.'},
+  {id:8, titulo:'Promo día de la madre', cliente:'Bloom Skincare', categoria:'Marketing', fecha:'2026-03-08', tono:'fucsia', destacado:false, publicado:false, enlace:'https://vimeo.com/000008', descripcion:'Pieza estacional archivada. Se vuelve a publicar en octubre.'}
+];
+
+let entregas = [
+  {id:1, clienteId:1, fecha:'2026-08-04', tipo:'Grabación', titulo:'Sesión de producto', nota:'Estudio, 10 a 14 h. Traer los tres sérums.'},
+  {id:2, clienteId:1, fecha:'2026-08-08', tipo:'Entrega', titulo:'3 videos UGC', nota:'Formato 9:16 con subtítulos.'},
+  {id:4, clienteId:1, fecha:'2026-08-21', tipo:'Reunión', titulo:'Revisión de campaña', nota:'Videollamada de 30 minutos.'},
+  {id:5, clienteId:1, fecha:'2026-07-24', tipo:'Entrega', titulo:'Fotos de portada', nota:'Entregado por Drive.'},
+  {id:6, clienteId:2, fecha:'2026-08-06', tipo:'Grabación', titulo:'Lookbook primavera', nota:'Locación a definir.'},
+  {id:7, clienteId:2, fecha:'2026-08-14', tipo:'Entrega', titulo:'Editorial + 4 reels', nota:''}
+];
+
+let publicaciones = [
+  {id:1, clienteId:1, titulo:'Rutina de mañana', clienteTexto:'Bloom Skincare', estado:'Medida',
+   fecha:'2026-07-09', plataforma:'Instagram', formato:'Reel', pilar:'Producto',
+   copy:'Tres pasos y listo. El sérum de noche se absorbe en segundos ✨',
+   hashtags:'#skincare #rutinadenoche #serum', idMedia:'17912345678901234',
+   permalink:'https://www.instagram.com/p/C9aBcDeFgH1/',
+   archivoFinal:'https://drive.google.com/file/d/1aBcRutina', creativoFigma:'https://figma.com/file/bloom-rutina',
+   m:{alcance:42000, vistas:51300, interacciones:3100, me_gusta:2410, comentarios:118, compartidos:342,
+      guardados:230, clics_enlace:null, seguidores_al_publicar:18420, medido_el:'2026-07-31'}},
+  {id:2, clienteId:1, titulo:'Textura del sérum', clienteTexto:'Bloom Skincare', estado:'Medida',
+   fecha:'2026-07-18', plataforma:'Instagram', formato:'Reel', pilar:'Producto',
+   copy:'Así se ve de cerca. Sin filtros.', hashtags:'#texturas #skincarereal',
+   idMedia:'17912345678905678', permalink:'https://www.instagram.com/p/C9xYzAbCd2/',
+   archivoFinal:'https://drive.google.com/file/d/1aBcTextura', creativoFigma:'',
+   m:{alcance:28500, vistas:33900, interacciones:2240, me_gusta:1780, comentarios:64, compartidos:210,
+      guardados:186, clics_enlace:null, seguidores_al_publicar:18760, medido_el:'2026-07-31'}},
+  {id:3, clienteId:1, titulo:'Antes y después', clienteTexto:'Bloom Skincare', estado:'Medida',
+   fecha:'2026-07-24', plataforma:'Instagram', formato:'Carrusel', pilar:'Testimonio',
+   copy:'Cuatro semanas de uso. Fotos sin retoque.', hashtags:'#antesydespues #resultados',
+   idMedia:'17912345678909012', permalink:'https://www.instagram.com/p/C9qRsTuVw3/',
+   archivoFinal:'https://drive.google.com/file/d/1aBcAntes', creativoFigma:'https://figma.com/file/bloom-antes',
+   m:{alcance:19800, vistas:21400, interacciones:1560, me_gusta:1190, comentarios:92, compartidos:118,
+      guardados:160, clics_enlace:null, seguidores_al_publicar:19010, medido_el:'2026-07-31'}},
+  {id:4, clienteId:1, titulo:'Reel de lanzamiento', clienteTexto:'Bloom Skincare', estado:'Aprobada',
+   fecha:'2026-08-13', plataforma:'Instagram', formato:'Reel', pilar:'Promoción',
+   copy:'Ya está disponible el sérum de noche.', hashtags:'#lanzamiento',
+   idMedia:'', permalink:'', archivoFinal:'', creativoFigma:'https://figma.com/file/bloom-lanzamiento',
+   m:{}},
+  {id:5, clienteId:2, titulo:'Colección otoño', clienteTexto:'Casa Nima', estado:'Medida',
+   fecha:'2026-07-12', plataforma:'Instagram', formato:'Carrusel', pilar:'Producto',
+   copy:'La colección completa, en un solo lugar.', hashtags:'#otoño2026 #casanima',
+   idMedia:'17998765432101234', permalink:'https://www.instagram.com/p/C9nImA1BcD/',
+   archivoFinal:'https://drive.google.com/file/d/2NimaOtono', creativoFigma:'',
+   m:{alcance:31000, vistas:36800, interacciones:2400, me_gusta:1920, comentarios:87, compartidos:240,
+      guardados:153, clics_enlace:412, seguidores_al_publicar:12300, medido_el:'2026-07-31'}},
+  {id:6, clienteId:2, titulo:'Detrás de escena', clienteTexto:'Casa Nima', estado:'Publicada',
+   fecha:'2026-07-26', plataforma:'Instagram', formato:'Historia', pilar:'Detrás de escena',
+   copy:'Día de producción.', hashtags:'',
+   idMedia:'17998765432105678', permalink:'https://www.instagram.com/stories/casanima/3901',
+   archivoFinal:'', creativoFigma:'', m:{}},
+  {id:7, clienteId:3, titulo:'Café de especialidad', clienteTexto:'Nube Café', estado:'Medida',
+   fecha:'2026-07-11', plataforma:'Instagram', formato:'Reel', pilar:'Educativo',
+   copy:'El método de filtrado, paso a paso.', hashtags:'#cafedeespecialidad',
+   idMedia:'17977766655544433', permalink:'https://www.instagram.com/p/C9NuBeCaF1/',
+   archivoFinal:'https://drive.google.com/file/d/3NubeFiltro', creativoFigma:'',
+   m:{alcance:21000, vistas:25600, interacciones:1700, me_gusta:1340, comentarios:71, compartidos:160,
+      guardados:129, clics_enlace:null, seguidores_al_publicar:8600, medido_el:'2026-07-31'}},
+  {id:8, clienteId:4, titulo:'Unboxing accesorios', clienteTexto:'Duna Joyas', estado:'Medida',
+   fecha:'2026-07-05', plataforma:'Instagram', formato:'Reel', pilar:'Producto',
+   copy:'Abrimos la caja nueva.', hashtags:'#unboxing #joyas',
+   idMedia:'17966655544433322', permalink:'https://www.instagram.com/p/C9DuNaJo1A/',
+   archivoFinal:'', creativoFigma:'',
+   m:{alcance:15400, vistas:18200, interacciones:1090, me_gusta:870, comentarios:44, compartidos:95,
+      guardados:81, clics_enlace:null, seguidores_al_publicar:5400, medido_el:'2026-07-31'}}
+];
+let siguientePublicacion = 9;
+
+let pedidos = [
+  {id:1, clienteId:1, fecha:'2026-07-28', texto:'Necesito dos videos cortos para el lanzamiento del sérum de noche. Que se vea la textura y el envase de cerca.', imagen:null, estado:'En curso', respuesta:'Tomo el pedido. Lo grabo en la sesión del 4 de agosto y te lo entrego el 8.'},
+  {id:2, clienteId:1, fecha:'2026-07-15', texto:'Fotos nuevas para la portada de Instagram, en tonos claros.', imagen:null, estado:'Entregado', respuesta:'Listo, te dejé 12 fotos en la carpeta compartida.'},
+  {id:3, clienteId:2, fecha:'2026-07-30', texto:'Queremos contenido para el día del niño. Pensamos en tres piezas con la colección nueva.', imagen:null, estado:'Nuevo', respuesta:''},
+  {id:4, clienteId:3, fecha:'2026-07-22', texto:'Un video mostrando el método de filtrado, bien cerrado y con sonido ambiente.', imagen:null, estado:'En curso', respuesta:'Lo grabo el martes que viene.'}
+];
+
+let metricas = {
+  1:{periodo:'2026-07', actualizado:'2026-07-31 08:15', origen:'Meta Graph API',
+     resumen:{alcance:184200, interacciones:12400, seguidores_nuevos:1240, piezas_publicadas:14},
+     variacion:{alcance:18, interacciones:9},
+     serie_mensual:[{mes:'2026-02',alcance:62000},{mes:'2026-03',alcance:71000},{mes:'2026-04',alcance:58000},
+                    {mes:'2026-05',alcance:84000},{mes:'2026-06',alcance:96000},{mes:'2026-07',alcance:112000}],
+     top_piezas:[{titulo:'Rutina de mañana', alcance:42000, interacciones:3100},
+                 {titulo:'Textura del sérum', alcance:28500, interacciones:2240},
+                 {titulo:'Antes y después', alcance:19800, interacciones:1560}]},
+  2:{periodo:'2026-07', actualizado:'2026-07-31 08:15', origen:'Meta Graph API',
+     resumen:{alcance:96800, interacciones:7100, seguidores_nuevos:610, piezas_publicadas:9},
+     variacion:{alcance:11, interacciones:6},
+     serie_mensual:[{mes:'2026-02',alcance:41000},{mes:'2026-03',alcance:38000},{mes:'2026-04',alcance:52000},
+                    {mes:'2026-05',alcance:49000},{mes:'2026-06',alcance:63000},{mes:'2026-07',alcance:68000}],
+     top_piezas:[{titulo:'Colección otoño', alcance:31000, interacciones:2400},
+                 {titulo:'Detrás de escena', alcance:16200, interacciones:1180}]},
+  3:{periodo:'2026-07', actualizado:'2026-07-31 08:15', origen:'Meta Graph API',
+     resumen:{alcance:54200, interacciones:4300, seguidores_nuevos:295, piezas_publicadas:6},
+     variacion:{alcance:14, interacciones:8},
+     serie_mensual:[{mes:'2026-02',alcance:22000},{mes:'2026-03',alcance:29000},{mes:'2026-04',alcance:31000},
+                    {mes:'2026-05',alcance:27000},{mes:'2026-06',alcance:38000},{mes:'2026-07',alcance:44000}],
+     top_piezas:[{titulo:'Café de especialidad', alcance:21000, interacciones:1700}]},
+  4:{periodo:'2026-07', actualizado:'2026-07-31 08:15', origen:'Meta Graph API',
+     resumen:{alcance:38900, interacciones:2800, seguidores_nuevos:180, piezas_publicadas:5},
+     variacion:{alcance:6, interacciones:4},
+     serie_mensual:[{mes:'2026-02',alcance:18000},{mes:'2026-03',alcance:16000},{mes:'2026-04',alcance:24000},
+                    {mes:'2026-05',alcance:26000},{mes:'2026-06',alcance:25000},{mes:'2026-07',alcance:31000}],
+     top_piezas:[{titulo:'Unboxing accesorios', alcance:15400, interacciones:1090}]}
+};
+let jsonPegado = '';
+const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const MESES_CORTO = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const DIAS = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+
+let siguienteVideo = 9, siguienteEntrega = 9, siguientePedido = 5;
+
+/* ============ ESTADO ============ */
+let sesion = null;              // {rol:'admin'|'cliente', clienteId}
+let filtroGaleria = 'Todos';
+let vistaAdmin = 'videos';
+let vistaCliente = 'calendario';
+let clienteAbierto = null;
+let subVista = 'calendario';
+let mesCal = new Date(2026, 7, 1);
+let editandoVideo = null, tonoElegido = 'fucsia', imagenTemporal = null;
+
+/* ============ RUTEO ============ */
+function mostrar(v){
+  ['sitio','ingreso','panel','portal'].forEach(x =>
+    document.getElementById(x).classList.toggle('oculto', x !== v));
+  window.scrollTo(0,0);
+  if(v === 'sitio') pintarSitio();
+  if(v === 'panel') pintarAdmin();
+  if(v === 'portal') pintarCliente();
+  if(v === 'ingreso') setTimeout(() => document.getElementById('correo').focus(), 80);
+}
+function irA(r){ location.hash = r; enrutar(); }
+function enrutar(){
+  const h = location.hash.replace('#','');
+  if(h === '/ingresar'){
+    if(!sesion) mostrar('ingreso');
+    else mostrar(sesion.rol === 'admin' ? 'panel' : 'portal');
+  } else if(h === '/panel'){
+    sesion && sesion.rol === 'admin' ? mostrar('panel') : mostrar('ingreso');
+  } else if(h === '/cliente'){
+    sesion && sesion.rol === 'cliente' ? mostrar('portal') : mostrar('ingreso');
+  } else if(!h || h === '/'){
+    mostrar('sitio');
+  } else if(document.getElementById('sitio').classList.contains('oculto')){
+    mostrar('sitio');
+  }
+}
+window.addEventListener('hashchange', enrutar);
+
+function entrar(){
+  const c = document.getElementById('correo').value.trim().toLowerCase();
+  const k = document.getElementById('clave').value.trim();
+  const err = document.getElementById('errorIngreso');
+  if((c === 'catalina' || c === 'catalinaavendanio@gmail.com') && k === 'admin'){
+    sesion = {rol:'admin'}; err.textContent = ''; limpiarIngreso(); irA('/panel'); return;
+  }
+  const cli = clientes.find(x => c === x.correo || c === x.correo + '@marca.com');
+  if(cli && k === cli.clave){
+    sesion = {rol:'cliente', clienteId:cli.id};
+    document.getElementById('marcaCliente').textContent = cli.marca;
+    err.textContent = ''; limpiarIngreso(); irA('/cliente'); return;
+  }
+  err.textContent = 'El correo o la clave no coinciden.';
+}
+function limpiarIngreso(){
+  document.getElementById('correo').value = '';
+  document.getElementById('clave').value = '';
+}
+function salir(){ sesion = null; clienteAbierto = null; irA('/'); }
+
+
+/* ============ UTILIDADES ============ */
+function fechaLarga(f){ const [a,m,d] = f.split('-'); return parseInt(d,10) + ' ' + MESES_CORTO[+m-1] + ' ' + a; }
+function diaMes(f){ const [,m,d] = f.split('-'); return parseInt(d,10) + ' ' + MESES_CORTO[+m-1]; }
+function esc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+function avisar(t){
+  const c = document.getElementById('capaAviso');
+  c.innerHTML = '<div class="aviso">' + t + '</div>';
+  setTimeout(() => { c.innerHTML = ''; }, 2200);
+}
+function cerrarModal(){ document.getElementById('capaModal').innerHTML = ''; imagenTemporal = null; }
+document.addEventListener('keydown', e => { if(e.key === 'Escape') cerrarModal(); });
+function nombreCliente(id){ const c = clientes.find(x => x.id === id); return c ? c.marca : '—'; }
+
+/* ============ SITIO PÚBLICO ============ */
+function pintarTira(){
+  const base = videos.filter(v => v.publicado);
+  const marco = v => '<div class="encuadre" style="background:' + TONOS[v.tono] + '"><span class="glifo">' + esc(v.cliente) + '</span></div>';
+  const a = base.filter((_,i) => i%2===0), b = base.filter((_,i) => i%2===1);
+  const arm = arr => (arr.length ? arr : base).map(marco).join('');
+  document.getElementById('tira').innerHTML =
+    '<div class="columna baja">' + arm(a) + arm(a) + '</div>' +
+    '<div class="columna sube">' + arm(b) + arm(b) + '</div>';
+}
+function pintarSitio(){
+  document.getElementById('filtros').innerHTML = ['Todos', ...CATEGORIAS].map(c =>
+    '<button class="filtro' + (c===filtroGaleria?' activo':'') + '" onclick="filtrar(\'' + c + '\')">' + c + '</button>').join('');
+  const lista = videos.filter(v => v.publicado)
+    .filter(v => filtroGaleria === 'Todos' || v.categoria === filtroGaleria)
+    .sort((a,b) => (b.destacado - a.destacado) || (b.fecha > a.fecha ? 1 : -1));
+  const g = document.getElementById('galeria');
+  g.innerHTML = lista.length ? lista.map(v =>
+    '<article class="trabajo" tabindex="0" onclick="abrirVisor(' + v.id + ')" onkeydown="if(event.key===\'Enter\')abrirVisor(' + v.id + ')">' +
+      '<div class="lienzo" style="background:' + TONOS[v.tono] + '"></div><div class="velo"></div>' +
+      (v.destacado ? '<div class="marca-destacado">Destacado</div>' : '') +
+      '<div class="reproducir"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>' +
+      '<div class="pie"><div class="cliente">' + esc(v.cliente) + ' · ' + v.categoria + '</div>' +
+      '<div class="titulo">' + esc(v.titulo) + '</div></div></article>').join('')
+    : '<div class="vacio-galeria">Todavía no hay trabajos publicados en esta categoría.</div>';
+  pintarTira();
+}
+function filtrar(c){ filtroGaleria = c; pintarSitio(); }
+function abrirVisor(id){
+  const v = videos.find(x => x.id === id);
+  document.getElementById('capaModal').innerHTML =
+  '<div class="telon" onclick="if(event.target===this)cerrarModal()"><div class="visor">' +
+    '<button class="cerrar" onclick="cerrarModal()">✕</button>' +
+    '<div class="marco" style="background:' + TONOS[v.tono] + '"><span>Acá se incrusta el video</span></div>' +
+    '<div class="info"><div class="rotulo">' + v.categoria + '</div><h3>' + esc(v.titulo) + '</h3>' +
+    '<p>' + esc(v.descripcion) + '</p><div class="meta">' +
+    '<div><div class="r">Cliente</div><div class="v">' + esc(v.cliente) + '</div></div>' +
+    '<div><div class="r">Fecha</div><div class="v">' + fechaLarga(v.fecha) + '</div></div>' +
+    '</div></div></div></div>';
+}
+
+/* ============ PANEL ADMIN ============ */
+function pestanaAdmin(v, btn){
+  vistaAdmin = v; clienteAbierto = null;
+  document.querySelectorAll('#menuAdmin button').forEach(b => b.classList.remove('activo'));
+  btn.classList.add('activo');
+  pintarAdmin();
+}
+function pintarAdmin(){
+  const a = document.getElementById('areaAdmin');
+  if(vistaAdmin === 'videos') a.innerHTML = vistaVideos();
+  else if(vistaAdmin === 'clientes') a.innerHTML = clienteAbierto ? vistaDetalleCliente() : vistaClientes();
+  else if(vistaAdmin === 'pedidos') a.innerHTML = vistaPedidosGlobal();
+  else a.innerHTML = vistaCuenta();
+  if(vistaAdmin === 'videos') pintarTablaVideos();
+}
+
+/* --- videos --- */
+function vistaVideos(){
+  const pub = videos.filter(v => v.publicado).length, dest = videos.filter(v => v.destacado).length;
+  return '<div class="encabezado-panel"><div><h1>Videos</h1>' +
+    '<p>Lo que está publicado acá es lo que se ve en el portfolio.</p></div>' +
+    '<button class="boton" onclick="formVideo()">+ Subir video</button></div>' +
+    '<div class="metricas">' + mCard(videos.length,'Cargados') + mCard(pub,'Publicados',1) +
+    mCard(videos.length-pub,'Ocultos') + mCard(dest,'Destacados') + '</div>' +
+    '<div class="herramientas">' +
+      '<input id="buscaVideo" type="search" placeholder="Buscar por título o cliente" oninput="pintarTablaVideos()">' +
+      '<select id="catVideo" onchange="pintarTablaVideos()">' +
+      ['Todas las categorías',...CATEGORIAS].map(c => '<option>'+c+'</option>').join('') + '</select></div>' +
+    '<div class="tabla-envoltorio"><table><thead><tr><th style="width:38%">Video</th><th>Categoría</th>' +
+    '<th>Fecha</th><th>Estado</th><th style="text-align:right">Acciones</th></tr></thead>' +
+    '<tbody id="tbodyVideos"></tbody></table></div><div id="vacioVideos"></div>';
+}
+function mCard(n,r,d){ return '<div class="metrica' + (d?' destacada':'') + '"><div class="n">' + n + '</div><div class="r">' + r + '</div></div>'; }
+function pintarTablaVideos(){
+  const q = (document.getElementById('buscaVideo').value || '').toLowerCase();
+  const cat = document.getElementById('catVideo').value;
+  const lista = videos.filter(v => !q || (v.titulo + ' ' + v.cliente).toLowerCase().includes(q))
+    .filter(v => cat === 'Todas las categorías' || v.categoria === cat)
+    .sort((a,b) => b.fecha > a.fecha ? 1 : -1);
+  document.getElementById('tbodyVideos').innerHTML = lista.map(v =>
+    '<tr><td><div class="celda-video"><div class="mini" style="background:' + TONOS[v.tono] + '"></div>' +
+    '<div><div class="t">' + esc(v.titulo) + '</div><div class="c">' + esc(v.cliente) + '</div></div></div></td>' +
+    '<td><span class="etiqueta">' + v.categoria + '</span></td><td>' + fechaLarga(v.fecha) + '</td>' +
+    '<td><span class="estado"><span class="punto' + (v.publicado?' vivo':'') + '"></span>' + (v.publicado?'En la web':'Oculto') + '</span></td>' +
+    '<td><div class="acciones-fila">' +
+    '<button class="icono estrella' + (v.destacado?' on':'') + '" title="Destacar" onclick="togDestacado(' + v.id + ')">★</button>' +
+    '<button class="icono" title="' + (v.publicado?'Ocultar':'Publicar') + '" onclick="togPublicado(' + v.id + ')">' + (v.publicado?'◉':'○') + '</button>' +
+    '<button class="icono" title="Editar" onclick="formVideo(' + v.id + ')">✎</button>' +
+    '<button class="icono" title="Eliminar" onclick="confirmarVideo(' + v.id + ')">✕</button>' +
+    '</div></td></tr>').join('');
+  document.getElementById('vacioVideos').innerHTML = lista.length ? '' :
+    '<div class="sin-datos">No hay videos con ese criterio.</div>';
+}
+function togPublicado(id){ const v = videos.find(x=>x.id===id); v.publicado=!v.publicado; pintarAdmin(); avisar(v.publicado?'Publicado en el sitio':'Oculto del sitio'); }
+function togDestacado(id){ const v = videos.find(x=>x.id===id); v.destacado=!v.destacado; pintarAdmin(); avisar(v.destacado?'Marcado como destacado':'Ya no es destacado'); }
+function confirmarVideo(id){
+  const v = videos.find(x=>x.id===id);
+  document.getElementById('capaModal').innerHTML =
+  '<div class="telon" onclick="if(event.target===this)cerrarModal()"><div class="hoja" style="max-width:430px">' +
+  '<h3>Eliminar video</h3><p class="guia">Se borra “' + esc(v.titulo) + '” del panel y del sitio. No se puede deshacer.</p>' +
+  '<div class="pie-hoja"><button class="boton fantasma" onclick="cerrarModal()">Cancelar</button>' +
+  '<button class="boton" onclick="borrarVideo(' + id + ')">Eliminar</button></div></div></div>';
+}
+function borrarVideo(id){ videos = videos.filter(v=>v.id!==id); cerrarModal(); pintarAdmin(); avisar('Video eliminado'); }
+function formVideo(id){
+  editandoVideo = id || null;
+  const v = id ? videos.find(x=>x.id===id) : {titulo:'',cliente:'',categoria:'UGC',fecha:HOY,tono:'fucsia',destacado:false,publicado:true,enlace:'',descripcion:''};
+  tonoElegido = v.tono;
+  document.getElementById('capaModal').innerHTML =
+  '<div class="telon" onclick="if(event.target===this)cerrarModal()"><div class="hoja">' +
+  '<button class="cerrar" onclick="cerrarModal()">✕</button>' +
+  '<h3>' + (id?'Editar video':'Subir video') + '</h3>' +
+  '<p class="guia">' + (id?'Los cambios se ven en el sitio al guardar.':'Pegá el enlace del video y completá los datos.') + '</p>' +
+  '<div class="fila">' + inp('vTitulo','Título',v.titulo) + inp('vCliente','Cliente',v.cliente) + '</div>' +
+  '<div class="fila"><div class="campo"><span>Categoría</span><select id="vCategoria">' +
+  CATEGORIAS.map(c => '<option' + (c===v.categoria?' selected':'') + '>' + c + '</option>').join('') +
+  '</select></div>' + inp('vFecha','Fecha',v.fecha,'date') + '</div>' +
+  inp('vEnlace','Enlace del video (YouTube, Vimeo o archivo)',v.enlace) +
+  '<div class="campo"><span>Descripción</span><textarea id="vDesc" rows="3">' + esc(v.descripcion) + '</textarea></div>' +
+  '<div class="campo"><span>Miniatura</span><div class="tonos">' +
+  Object.keys(TONOS).map(t => '<button class="tono' + (t===v.tono?' sel':'') + '" data-t="' + t + '" style="background:' + TONOS[t] + '" onclick="elegirTono(\'' + t + '\')"></button>').join('') +
+  '</div></div><div class="interruptores">' +
+  '<label class="interruptor"><input type="checkbox" id="vPub"' + (v.publicado?' checked':'') + '> Mostrar en el sitio</label>' +
+  '<label class="interruptor"><input type="checkbox" id="vDest"' + (v.destacado?' checked':'') + '> Destacar arriba de todo</label>' +
+  '</div><div class="pie-hoja"><button class="boton fantasma" onclick="cerrarModal()">Cancelar</button>' +
+  '<button class="boton" onclick="guardarVideo()">' + (id?'Guardar cambios':'Subir video') + '</button></div></div></div>';
+}
+function inp(id,r,val,tipo){ return '<div class="campo"><span>' + r + '</span><input id="' + id + '" type="' + (tipo||'text') + '" value="' + esc(val) + '"></div>'; }
+function elegirTono(t){ tonoElegido = t; document.querySelectorAll('.tono').forEach(b => b.classList.toggle('sel', b.dataset.t === t)); }
+function guardarVideo(){
+  const d = {titulo:document.getElementById('vTitulo').value.trim()||'Sin título',
+    cliente:document.getElementById('vCliente').value.trim()||'Sin cliente',
+    categoria:document.getElementById('vCategoria').value,
+    fecha:document.getElementById('vFecha').value||HOY,
+    enlace:document.getElementById('vEnlace').value.trim(),
+    descripcion:document.getElementById('vDesc').value.trim(),
+    tono:tonoElegido, publicado:document.getElementById('vPub').checked,
+    destacado:document.getElementById('vDest').checked};
+  if(editandoVideo){ Object.assign(videos.find(v=>v.id===editandoVideo), d); avisar('Cambios guardados'); }
+  else { videos.unshift(Object.assign({id:siguienteVideo++}, d)); avisar('Video subido'); }
+  cerrarModal(); pintarAdmin();
+}
+
+/* --- clientes --- */
+function vistaClientes(){
+  return '<div class="encabezado-panel"><div><h1>Clientes</h1>' +
+    '<p>Cada cliente entra con su clave y ve solo su calendario, sus pedidos y sus métricas.</p></div>' +
+    '<button class="boton" onclick="formCliente()">+ Nuevo cliente</button></div>' +
+    '<div class="tabla-envoltorio"><table><thead><tr><th style="width:34%">Marca</th><th>Contacto</th>' +
+    '<th>Próxima fecha</th><th>Pedidos abiertos</th><th style="text-align:right">Acciones</th></tr></thead><tbody>' +
+    clientes.map(c => {
+      const prox = entregas.filter(e => e.clienteId === c.id && e.fecha >= HOY).sort((a,b) => a.fecha > b.fecha ? 1 : -1)[0];
+      const ab = pedidos.filter(p => p.clienteId === c.id && p.estado !== 'Entregado').length;
+      return '<tr><td><div class="celda-video">' +
+        '<div class="inicial" style="background:' + TONOS[c.tono] + '">' + c.marca[0] + '</div>' +
+        '<div><div class="t">' + esc(c.marca) + '</div><div class="c">' + esc(c.correo) + '</div></div></div></td>' +
+        '<td>' + esc(c.contacto) + '</td>' +
+        '<td>' + (prox ? diaMes(prox.fecha) + ' · ' + prox.tipo : '<span style="color:var(--malva)">Sin fechas</span>') + '</td>' +
+        '<td>' + (ab ? '<span class="insignia nuevo">' + ab + ' abierto' + (ab>1?'s':'') + '</span>' : '<span class="etiqueta">Al día</span>') + '</td>' +
+        '<td><div class="acciones-fila"><button class="boton chico" onclick="abrirCliente(' + c.id + ')">Abrir ficha</button></div></td></tr>';
+    }).join('') + '</tbody></table></div>';
+}
+function formCliente(){
+  document.getElementById('capaModal').innerHTML =
+  '<div class="telon" onclick="if(event.target===this)cerrarModal()"><div class="hoja" style="max-width:520px">' +
+  '<button class="cerrar" onclick="cerrarModal()">✕</button><h3>Nuevo cliente</h3>' +
+  '<p class="guia">Se le crea un acceso propio al portal. La clave se le envía por correo.</p>' +
+  '<div class="fila">' + inp('cMarca','Marca','') + inp('cContacto','Persona de contacto','') + '</div>' +
+  '<div class="fila">' + inp('cCorreo','Correo','') + inp('cClave','Clave inicial','') + '</div>' +
+  '<div class="campo"><span>Color de la ficha</span><div class="tonos">' +
+  Object.keys(TONOS).map((t,i) => '<button class="tono' + (i===0?' sel':'') + '" data-t="' + t + '" style="background:' + TONOS[t] + '" onclick="elegirTono(\'' + t + '\')"></button>').join('') +
+  '</div></div><div class="pie-hoja"><button class="boton fantasma" onclick="cerrarModal()">Cancelar</button>' +
+  '<button class="boton" onclick="guardarCliente()">Crear cliente</button></div></div></div>';
+  tonoElegido = 'fucsia';
+}
+function guardarCliente(){
+  const m = document.getElementById('cMarca').value.trim();
+  if(!m){ avisar('Falta el nombre de la marca'); return; }
+  clientes.push({id: Math.max(...clientes.map(c=>c.id))+1, marca:m,
+    contacto:document.getElementById('cContacto').value.trim()||'—',
+    correo:document.getElementById('cCorreo').value.trim().toLowerCase()||m.toLowerCase().split(' ')[0],
+    clave:document.getElementById('cClave').value.trim()||'cliente', tono:tonoElegido});
+  cerrarModal(); pintarAdmin(); avisar('Cliente creado');
+}
+function abrirCliente(id){ clienteAbierto = id; subVista = 'calendario'; mesCal = new Date(2026,7,1); pintarAdmin(); }
+function subPestana(v){ subVista = v; pintarAdmin(); }
+function vistaDetalleCliente(){
+  const c = clientes.find(x => x.id === clienteAbierto);
+  let cuerpo = '';
+  if(subVista === 'calendario') cuerpo = bloqueCalendario(c.id, true);
+  else if(subVista === 'publicaciones') cuerpo = bloquePublicaciones(c.id, true);
+  else if(subVista === 'pedidos') cuerpo = bloquePedidos(c.id, true);
+  else cuerpo = bloqueMetricas(c.id, true);
+  return '<div class="migas"><button onclick="volverClientes()">Clientes</button> / ' + esc(c.marca) + '</div>' +
+    '<div class="encabezado-panel"><div><h1>' + esc(c.marca) + '</h1>' +
+    '<p>' + esc(c.contacto) + ' · acceso: ' + esc(c.correo) + '</p></div></div>' +
+    '<div class="subpestanas">' +
+    ['calendario','publicaciones','pedidos','metricas'].map(v => '<button class="' + (subVista===v?'activo':'') + '" onclick="subPestana(\'' + v + '\')">' +
+      (v==='calendario'?'Calendario':v==='publicaciones'?'Publicaciones':v==='pedidos'?'Pedidos':'Métricas') + '</button>').join('') +
+    '</div>' + cuerpo;
+}
+function volverClientes(){ clienteAbierto = null; pintarAdmin(); }
+
+/* --- calendario --- */
+function bloqueCalendario(clienteId, admin){
+  const y = mesCal.getFullYear(), m = mesCal.getMonth();
+  const primero = new Date(y, m, 1);
+  let arranque = primero.getDay(); arranque = (arranque === 0 ? 6 : arranque - 1);
+  const diasMes = new Date(y, m+1, 0).getDate();
+  const propias = entregas.filter(e => e.clienteId === clienteId).map(e =>
+      ({id:e.id, fecha:e.fecha, tipo:e.tipo, titulo:e.titulo, nota:e.nota, origen:'entrega'}))
+    .concat(publicaciones.filter(p => p.clienteId === clienteId).map(p =>
+      ({id:p.id, fecha:p.fecha, tipo:'Publicación', titulo:p.titulo,
+        nota:p.plataforma + ' · ' + p.formato, origen:'publicacion'})));
+  let celdas = '';
+  for(let i = 0; i < arranque; i++) celdas += '<div class="cal-dia otro"></div>';
+  for(let d = 1; d <= diasMes; d++){
+    const f = y + '-' + String(m+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+    const evs = propias.filter(e => e.fecha === f);
+    celdas += '<div class="cal-dia' + (f===HOY?' hoy':'') + '">' +
+      '<div class="num">' + d + '</div>' +
+      (admin ? '<button class="agregar" title="Agregar fecha" onclick="formEntrega(' + clienteId + ',null,\'' + f + '\')">+</button>' : '') +
+      evs.map(e => '<button class="evento ' + CLASE_TIPO[e.tipo] + '" onclick="' +
+        (e.origen === 'publicacion' ? 'verPublicacion(' + e.id + ',' + (admin?1:0) + ')' : 'verEntrega(' + e.id + ',' + (admin?1:0) + ')') + '">' +
+        '<small>' + e.tipo + '</small>' + esc(e.titulo) + '</button>').join('') + '</div>';
+  }
+  const total = arranque + diasMes, resto = (7 - total % 7) % 7;
+  for(let i = 0; i < resto; i++) celdas += '<div class="cal-dia otro"></div>';
+
+  const prox = propias.filter(e => e.fecha >= HOY).sort((a,b) => a.fecha > b.fecha ? 1 : -1);
+  const listaProx = prox.length ? prox.map(e =>
+    '<div class="proxima"><div class="f">' + diaMes(e.fecha) + '</div>' +
+    '<div><div class="t">' + esc(e.titulo) + '</div><div class="d">' + e.tipo + (e.nota ? ' · ' + esc(e.nota) : '') + '</div></div>' +
+    (admin && e.origen === 'entrega' ? '<div class="acc"><button class="icono" title="Editar" onclick="formEntrega(' + clienteId + ',' + e.id + ')">✎</button>' +
+             '<button class="icono" title="Eliminar" onclick="borrarEntrega(' + e.id + ')">✕</button></div>' : '') +
+    (admin && e.origen === 'publicacion' ? '<div class="acc"><button class="icono" title="Ver publicación" onclick="verPublicacion(' + e.id + ',1)">↗</button></div>' : '') +
+    '</div>').join('') : '<div class="sin-datos">No hay fechas cargadas todavía.</div>';
+
+  return '<div class="cal-cabecera"><h3>' + MESES[m] + ' ' + y + '</h3>' +
+    '<div class="cal-nav"><button onclick="moverMes(-1)">‹</button><button onclick="moverMes(1)">›</button></div>' +
+    (admin ? '<button class="boton chico" style="margin-left:auto" onclick="formEntrega(' + clienteId + ')">+ Agregar fecha</button>' : '') +
+    '</div>' +
+    '<div class="cal-envoltorio"><div class="cal-grilla">' +
+      DIAS.map(d => '<div class="cal-dia-nombre">' + d + '</div>').join('') + celdas + '</div></div>' +
+    '<div class="proximas"><h4>' + (admin ? 'Próximas fechas del cliente' : 'Lo que viene') + '</h4>' + listaProx + '</div>';
+}
+function moverMes(n){ mesCal = new Date(mesCal.getFullYear(), mesCal.getMonth()+n, 1); sesion.rol === 'admin' ? pintarAdmin() : pintarCliente(); }
+function verEntrega(id, admin){
+  const e = entregas.find(x => x.id === id);
+  document.getElementById('capaModal').innerHTML =
+  '<div class="telon" onclick="if(event.target===this)cerrarModal()"><div class="hoja" style="max-width:460px">' +
+  '<button class="cerrar" onclick="cerrarModal()">✕</button>' +
+  '<div class="rotulo">' + e.tipo + '</div><h3 style="margin-top:12px">' + esc(e.titulo) + '</h3>' +
+  '<p class="guia">' + fechaLarga(e.fecha) + (e.nota ? ' · ' + esc(e.nota) : '') + '</p>' +
+  '<div class="pie-hoja">' + (admin ?
+    '<button class="boton fantasma" onclick="borrarEntrega(' + e.id + ')">Eliminar</button>' +
+    '<button class="boton" onclick="formEntrega(' + e.clienteId + ',' + e.id + ')">Editar</button>' :
+    '<button class="boton" onclick="cerrarModal()">Entendido</button>') + '</div></div></div>';
+}
+function formEntrega(clienteId, id, fechaPre){
+  const e = id ? entregas.find(x => x.id === id) : {clienteId, fecha: fechaPre || HOY, tipo:'Grabación', titulo:'', nota:''};
+  document.getElementById('capaModal').innerHTML =
+  '<div class="telon" onclick="if(event.target===this)cerrarModal()"><div class="hoja" style="max-width:520px">' +
+  '<button class="cerrar" onclick="cerrarModal()">✕</button><h3>' + (id?'Editar fecha':'Agregar fecha') + '</h3>' +
+  '<p class="guia">El cliente la ve en su calendario apenas la guardás.</p>' +
+  '<div class="fila">' + inp('eFecha','Fecha',e.fecha,'date') +
+  '<div class="campo"><span>Tipo</span><select id="eTipo">' +
+  TIPOS.map(t => '<option' + (t===e.tipo?' selected':'') + '>' + t + '</option>').join('') + '</select></div></div>' +
+  inp('eTitulo','Título',e.titulo) +
+  '<div class="campo"><span>Nota para el cliente</span><textarea id="eNota" rows="2">' + esc(e.nota) + '</textarea></div>' +
+  '<div class="pie-hoja"><button class="boton fantasma" onclick="cerrarModal()">Cancelar</button>' +
+  '<button class="boton" onclick="guardarEntrega(' + clienteId + ',' + (id||'null') + ')">Guardar</button></div></div></div>';
+}
+function guardarEntrega(clienteId, id){
+  const d = {clienteId, fecha:document.getElementById('eFecha').value||HOY,
+    tipo:document.getElementById('eTipo').value,
+    titulo:document.getElementById('eTitulo').value.trim()||'Sin título',
+    nota:document.getElementById('eNota').value.trim()};
+  if(id) Object.assign(entregas.find(x=>x.id===id), d);
+  else entregas.push(Object.assign({id:siguienteEntrega++}, d));
+  cerrarModal(); pintarAdmin(); avisar('Fecha guardada');
+}
+function borrarEntrega(id){ entregas = entregas.filter(e => e.id !== id); cerrarModal(); pintarAdmin(); avisar('Fecha eliminada'); }
+
+/* --- pedidos --- */
+function bloquePedidos(clienteId, admin){
+  const lista = pedidos.filter(p => p.clienteId === clienteId).sort((a,b) => a.fecha > b.fecha ? -1 : 1);
+  if(!lista.length) return '<div class="sin-datos">Todavía no hay pedidos.</div>';
+  return lista.map(p => tarjetaPedido(p, admin, false)).join('');
+}
+function tarjetaPedido(p, admin, mostrarMarca){
+  const cl = p.estado === 'Nuevo' ? 'nuevo' : p.estado === 'En curso' ? 'curso' : 'entregado';
+  return '<div class="pedido">' +
+    '<div class="adjunto">' + (p.imagen ? '<img src="' + p.imagen + '" alt="Referencia adjunta">' : 'Sin imagen') + '</div>' +
+    '<div><div class="cab"><div class="fecha">' + fechaLarga(p.fecha) +
+      (mostrarMarca ? ' · ' + esc(nombreCliente(p.clienteId)) : '') + '</div>' +
+      '<span class="insignia ' + cl + '">' + p.estado + '</span></div>' +
+    '<p>' + esc(p.texto) + '</p>' +
+    (p.respuesta ? '<div class="respuesta"><strong>Respuesta de Catalina</strong>' + esc(p.respuesta) + '</div>' : '') +
+    (admin ? '<div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">' +
+      '<button class="boton chico fantasma" onclick="formRespuesta(' + p.id + ')">Responder</button>' +
+      (p.estado !== 'En curso' ? '<button class="boton chico fantasma" onclick="estadoPedido(' + p.id + ',\'En curso\')">Marcar en curso</button>' : '') +
+      (p.estado !== 'Entregado' ? '<button class="boton chico" onclick="estadoPedido(' + p.id + ',\'Entregado\')">Marcar entregado</button>' : '') +
+      '</div>' : '') +
+    '</div></div>';
+}
+function estadoPedido(id, e){
+  pedidos.find(p => p.id === id).estado = e;
+  sesion.rol === 'admin' ? pintarAdmin() : pintarCliente();
+  avisar('Pedido ' + e.toLowerCase());
+}
+function formRespuesta(id){
+  const p = pedidos.find(x => x.id === id);
+  document.getElementById('capaModal').innerHTML =
+  '<div class="telon" onclick="if(event.target===this)cerrarModal()"><div class="hoja" style="max-width:520px">' +
+  '<button class="cerrar" onclick="cerrarModal()">✕</button><h3>Responder pedido</h3>' +
+  '<p class="guia">' + esc(p.texto) + '</p>' +
+  '<div class="campo"><span>Tu respuesta</span><textarea id="rTexto" rows="4">' + esc(p.respuesta) + '</textarea></div>' +
+  '<div class="pie-hoja"><button class="boton fantasma" onclick="cerrarModal()">Cancelar</button>' +
+  '<button class="boton" onclick="guardarRespuesta(' + id + ')">Enviar respuesta</button></div></div></div>';
+}
+function guardarRespuesta(id){
+  const p = pedidos.find(x => x.id === id);
+  p.respuesta = document.getElementById('rTexto').value.trim();
+  if(p.estado === 'Nuevo') p.estado = 'En curso';
+  cerrarModal(); pintarAdmin(); avisar('Respuesta enviada');
+}
+function vistaPedidosGlobal(){
+  const nuevos = pedidos.filter(p => p.estado === 'Nuevo').length;
+  const curso = pedidos.filter(p => p.estado === 'En curso').length;
+  const ent = pedidos.filter(p => p.estado === 'Entregado').length;
+  const lista = pedidos.slice().sort((a,b) => a.fecha > b.fecha ? -1 : 1);
+  return '<div class="encabezado-panel"><div><h1>Pedidos</h1>' +
+    '<p>Todo lo que te pidieron tus clientes, en un solo lugar.</p></div></div>' +
+    '<div class="metricas">' + mCard(pedidos.length,'Total') + mCard(nuevos,'Nuevos',1) +
+    mCard(curso,'En curso') + mCard(ent,'Entregados') + '</div>' +
+    lista.map(p => tarjetaPedido(p, true, true)).join('');
+}
+
+/* --- métricas --- */
+function nMil(n){
+  if(typeof n !== 'number' || isNaN(n)) return '—';
+  if(n < 1000) return String(n);
+  return (n/1000).toFixed(1).replace('.0','').replace('.',',') + ' K';
+}
+function mesCorto(m){ const [,mm] = m.split('-'); return MESES_CORTO[+mm-1]; }
+
+function bloqueMetricas(clienteId, admin){
+  const m = metricas[clienteId];
+  if(!m) return '<div class="sin-datos">Esta marca todavía no tiene métricas cargadas.' +
+    (admin ? '<div style="margin-top:18px"><button class="boton chico" onclick="formImportar(' + clienteId + ')">Importar JSON</button></div>' : '') +
+    '</div>';
+  const serie = m.serie_mensual || [];
+  const max = Math.max.apply(null, serie.map(x => x.alcance).concat([1]));
+  const r = m.resumen || {};
+  const v = m.variacion || {};
+  const dv = n => (typeof n === 'number' ? '<div class="delta' + (n>0?' sube':'') + '">' + (n>0?'▲ ':'') + n + '% vs. mes anterior</div>' : '');
+
+  return '<div class="banda-notion"><span class="marca-fuente">' + esc(m.origen || 'Meta Graph API') + '</span>' +
+      'Período ' + esc(m.periodo) + ' · actualizado el ' + esc(m.actualizado) +
+      (admin ? '<span style="margin-left:auto;display:flex;gap:8px">' +
+        '<button class="boton chico fantasma" onclick="modalFormato()">Ver formato</button>' +
+        '<button class="boton chico" onclick="formImportar(' + clienteId + ')">Importar JSON</button></span>' : '') +
+    '</div>' +
+    '<div class="metricas">' +
+      '<div class="metrica destacada"><div class="n">' + nMil(r.alcance) + '</div>' +
+        '<div class="r">Alcance del mes</div>' + dv(v.alcance) + '</div>' +
+      '<div class="metrica"><div class="n">' + nMil(r.interacciones) + '</div>' +
+        '<div class="r">Interacciones</div>' + dv(v.interacciones) + '</div>' +
+      '<div class="metrica"><div class="n">+' + (r.seguidores_nuevos || 0).toLocaleString('es-AR') + '</div>' +
+        '<div class="r">Seguidores nuevos</div><div class="delta">Últimos 30 días</div></div>' +
+      '<div class="metrica"><div class="n">' + (r.piezas_publicadas || 0) + '</div>' +
+        '<div class="r">Piezas publicadas</div><div class="delta">En el período</div></div>' +
+    '</div>' +
+    subtitulo('Alcance por mes') +
+    '<div class="grafico">' + serie.map(x =>
+      '<div class="barra-dato"><div class="val">' + nMil(x.alcance) + '</div>' +
+      '<div class="relleno" style="height:' + Math.round(x.alcance/max*100) + '%"></div>' +
+      '<div class="et">' + mesCorto(x.mes) + '</div></div>').join('') + '</div>' +
+    (m.top_piezas && m.top_piezas.length ? subtitulo('Piezas con mejor rendimiento') +
+      '<div class="tabla-envoltorio"><table><thead><tr><th style="width:55%">Pieza</th>' +
+      '<th>Alcance</th><th>Interacciones</th></tr></thead><tbody>' +
+      m.top_piezas.map(t => '<tr><td>' + esc(t.titulo) + '</td><td>' + nMil(t.alcance) +
+        '</td><td>' + nMil(t.interacciones) + '</td></tr>').join('') + '</tbody></table></div>' : '');
+}
+function subtitulo(t){
+  return '<h4 style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--malva);' +
+    'margin:30px 0 14px">' + t + '</h4>';
+}
+
+const EJEMPLO_JSON = JSON.stringify({
+  version:1, cliente:'bloom', periodo:'2026-07', actualizado:'2026-07-31 08:15', origen:'Meta Graph API',
+  resumen:{alcance:184200, interacciones:12400, seguidores_nuevos:1240, piezas_publicadas:14},
+  variacion:{alcance:18, interacciones:9},
+  serie_mensual:[{mes:'2026-06', alcance:96000},{mes:'2026-07', alcance:112000}],
+  top_piezas:[{titulo:'Rutina de mañana', alcance:42000, interacciones:3100}]
+}, null, 2);
+
+function modalFormato(){
+  document.getElementById('capaModal').innerHTML =
+  '<div class="telon" onclick="if(event.target===this)cerrarModal()"><div class="hoja" style="max-width:640px">' +
+  '<button class="cerrar" onclick="cerrarModal()">✕</button><h3>Formato del archivo</h3>' +
+  '<p class="guia">Este es el formato que tiene que devolverte Claude cuando le pidas las métricas. ' +
+  'Los campos obligatorios son <strong>cliente</strong>, <strong>periodo</strong> y <strong>resumen</strong>; ' +
+  'el resto es opcional.</p>' +
+  '<div class="bloque-json">' + esc(EJEMPLO_JSON) + '</div>' +
+  '<div class="pie-hoja"><button class="boton" onclick="cerrarModal()">Entendido</button></div></div></div>';
+}
+
+function formImportar(clienteId){
+  jsonPegado = '';
+  const c = clientes.find(x => x.id === clienteId);
+  document.getElementById('capaModal').innerHTML =
+  '<div class="telon" onclick="if(event.target===this)cerrarModal()"><div class="hoja" style="max-width:600px">' +
+  '<button class="cerrar" onclick="cerrarModal()">✕</button><h3>Importar métricas</h3>' +
+  '<p class="guia">Métricas de ' + esc(c.marca) + '. Subí el archivo que te devolvió Claude o pegá el contenido.</p>' +
+  '<div id="resultadoImport"></div>' +
+  '<div class="campo"><span>Archivo .json</span>' +
+  '<input type="file" accept=".json,application/json" onchange="leerJson(this)"></div>' +
+  '<div class="campo"><span>O pegá el contenido acá</span>' +
+  '<textarea id="jsonTexto" rows="7" placeholder=\'{ "cliente": "' + esc(c.correo) + '", "periodo": "2026-08", ... }\'></textarea></div>' +
+  '<div class="pie-hoja"><button class="boton fantasma" onclick="modalFormato()">Ver formato</button>' +
+  '<button class="boton" onclick="importarMetricas(' + clienteId + ')">Importar</button></div></div></div>';
+}
+function leerJson(input){
+  const f = input.files && input.files[0];
+  if(!f) return;
+  const l = new FileReader();
+  l.onload = e => {
+    jsonPegado = e.target.result;
+    document.getElementById('jsonTexto').value = jsonPegado;
+    document.getElementById('resultadoImport').innerHTML =
+      '<div class="aviso-ok">Archivo leído: ' + esc(f.name) + '. Tocá Importar para aplicarlo.</div>';
+  };
+  l.readAsText(f);
+}
+function importarMetricas(clienteId){
+  const crudo = (document.getElementById('jsonTexto').value || jsonPegado || '').trim();
+  const salida = document.getElementById('resultadoImport');
+  if(!crudo){ salida.innerHTML = '<div class="aviso-error">Subí un archivo o pegá el contenido.</div>'; return; }
+  let d;
+  try{ d = JSON.parse(crudo); }
+  catch(err){ salida.innerHTML = '<div class="aviso-error">El archivo no es JSON válido: ' + esc(err.message) + '</div>'; return; }
+
+  const faltan = [];
+  if(!d.periodo) faltan.push('periodo');
+  if(d.resumen){
+    ['alcance','interacciones','seguidores_nuevos','piezas_publicadas'].forEach(k => {
+      if(typeof d.resumen[k] !== 'number') faltan.push('resumen.' + k);
+    });
+  } else if(!Array.isArray(d.publicaciones)){
+    faltan.push('resumen o publicaciones');
+  }
+  if(faltan.length){
+    salida.innerHTML = '<div class="aviso-error">Faltan campos o no son números: ' + faltan.join(', ') + '</div>';
+    return;
+  }
+  const c = clientes.find(x => x.id === clienteId);
+  if(d.cliente && String(d.cliente).toLowerCase() !== c.correo && String(d.cliente).toLowerCase() !== c.marca.toLowerCase()){
+    salida.innerHTML = '<div class="aviso-error">El archivo dice cliente “' + esc(d.cliente) +
+      '” y estás importando en ' + esc(c.marca) + '. Revisá antes de seguir.</div>';
+    return;
+  }
+  let informe = null;
+  if(Array.isArray(d.publicaciones)) informe = conciliarPublicaciones(clienteId, d.publicaciones);
+  if(!d.resumen){
+    cerrarModal(); subVista = 'publicaciones'; pintarAdmin();
+    avisar(informe.creadas + ' nuevas · ' + informe.actualizadas + ' actualizadas');
+    return;
+  }
+  metricas[clienteId] = {
+    periodo: d.periodo,
+    actualizado: d.actualizado || HOY,
+    origen: d.origen || 'Meta Graph API',
+    resumen: d.resumen,
+    variacion: d.variacion || {},
+    serie_mensual: Array.isArray(d.serie_mensual) ? d.serie_mensual : [],
+    top_piezas: Array.isArray(d.top_piezas) ? d.top_piezas : []
+  };
+  cerrarModal(); pintarAdmin();
+  avisar('Métricas de ' + d.periodo + ' importadas' +
+    (informe ? ' · ' + informe.creadas + ' publicaciones nuevas, ' + informe.actualizadas + ' actualizadas' : ''));
+}
+
+/* --- publicaciones --- */
+function num(n){ return (typeof n === 'number' && !isNaN(n)) ? n.toLocaleString('es-AR') : '—'; }
+function corta(t,n){ t = t || ''; return esc(t.length > n ? t.slice(0,n) + '…' : t) || '—'; }
+function enlaceMini(u,t){ return u ? '<a class="enlace-mini" href="' + esc(u) + '" target="_blank" rel="noopener">' + t + '</a>' : '—'; }
+function claseEstado(e){
+  return e === 'Planificada' ? 'planificada' : e === 'En producción' ? 'produccion' :
+         e === 'Aprobada' ? 'aprobada' : e === 'Publicada' ? 'publicada' : 'medida';
+}
+function tasaInteraccion(p){
+  const m = p.m || {};
+  if(typeof m.tasa_interaccion === 'number') return m.tasa_interaccion.toFixed(1).replace('.',',') + ' %';
+  if(typeof m.interacciones === 'number' && typeof m.alcance === 'number' && m.alcance > 0)
+    return (m.interacciones / m.alcance * 100).toFixed(1).replace('.',',') + ' %';
+  return '—';
+}
+const COLUMNAS = [
+  {t:'Publicación', cli:1, v:p => esc(p.titulo)},
+  {t:'Estado', cli:0, v:p => '<span class="insignia ' + claseEstado(p.estado) + '">' + p.estado + '</span>'},
+  {t:'Fecha', cli:1, v:p => fechaLarga(p.fecha)},
+  {t:'Plataforma', cli:1, v:p => esc(p.plataforma)},
+  {t:'Formato', cli:1, v:p => esc(p.formato)},
+  {t:'Pilar', cli:1, v:p => esc(p.pilar || '—')},
+  {t:'Cliente', cli:0, v:p => esc(nombreCliente(p.clienteId))},
+  {t:'Cliente (texto)', cli:0, v:p => esc(p.clienteTexto || '—')},
+  {t:'Alcance', cli:1, n:1, v:p => num((p.m||{}).alcance)},
+  {t:'Vistas', cli:1, n:1, v:p => num((p.m||{}).vistas)},
+  {t:'Interacciones', cli:1, n:1, v:p => num((p.m||{}).interacciones)},
+  {t:'Me gusta', cli:1, n:1, v:p => num((p.m||{}).me_gusta)},
+  {t:'Comentarios', cli:1, n:1, v:p => num((p.m||{}).comentarios)},
+  {t:'Compartidos', cli:1, n:1, v:p => num((p.m||{}).compartidos)},
+  {t:'Guardados', cli:1, n:1, v:p => num((p.m||{}).guardados)},
+  {t:'Clics al enlace', cli:0, n:1, v:p => num((p.m||{}).clics_enlace)},
+  {t:'Tasa interacción %', cli:1, n:1, v:p => tasaInteraccion(p)},
+  {t:'Seguidores al publicar', cli:0, n:1, v:p => num((p.m||{}).seguidores_al_publicar)},
+  {t:'Medido el', cli:0, v:p => (p.m||{}).medido_el ? fechaLarga(p.m.medido_el) : '—'},
+  {t:'Copy / Caption', cli:0, v:p => corta(p.copy, 48)},
+  {t:'Hashtags', cli:0, v:p => corta(p.hashtags, 34)},
+  {t:'Permalink', cli:1, v:p => enlaceMini(p.permalink, 'Ver')},
+  {t:'ID Media (Meta)', cli:0, v:p => esc(p.idMedia || '—')},
+  {t:'Archivo final', cli:1, v:p => enlaceMini(p.archivoFinal, 'Abrir')},
+  {t:'Creativo (Figma)', cli:0, v:p => enlaceMini(p.creativoFigma, 'Abrir')}
+];
+
+function bloquePublicaciones(clienteId, admin){
+  const cols = COLUMNAS.filter(c => admin || c.cli);
+  const lista = publicaciones.filter(p => p.clienteId === clienteId)
+    .sort((a,b) => a.fecha > b.fecha ? -1 : 1);
+  const barra = admin ?
+    '<div class="herramientas"><button class="boton chico" onclick="formPublicacion(' + clienteId + ')">+ Nueva publicación</button>' +
+    '<button class="boton chico fantasma" onclick="formImportar(' + clienteId + ')">Importar JSON</button>' +
+    '<div class="espacio"></div><span style="font-size:12px;color:var(--malva)">' +
+    lista.length + ' publicaciones · desplazá la tabla para ver todas las columnas</span></div>' : '';
+  if(!lista.length) return barra + '<div class="sin-datos">Todavía no hay publicaciones cargadas.</div>';
+  return barra +
+    '<div class="tabla-ancha"><table class="ancha"><thead><tr>' +
+    cols.map(c => '<th>' + c.t + '</th>').join('') +
+    (admin ? '<th></th>' : '') + '</tr></thead><tbody>' +
+    lista.map(p => '<tr>' + cols.map(c =>
+        '<td' + (c.n ? ' class="num"' : '') + '>' + c.v(p) + '</td>').join('') +
+      (admin ? '<td><div class="acciones-fila">' +
+        '<button class="icono" title="Ver ficha" onclick="verPublicacion(' + p.id + ',1)">↗</button>' +
+        '<button class="icono" title="Editar" onclick="formPublicacion(' + p.clienteId + ',' + p.id + ')">✎</button>' +
+        '</div></td>' : '') + '</tr>').join('') +
+    '</tbody></table></div>';
+}
+
+function verPublicacion(id, admin){
+  const p = publicaciones.find(x => x.id === id);
+  const m = p.m || {};
+  const dato = (r,v) => '<div><div class="r">' + r + '</div><div class="v">' + v + '</div></div>';
+  document.getElementById('capaModal').innerHTML =
+  '<div class="telon" onclick="if(event.target===this)cerrarModal()"><div class="hoja" style="max-width:660px">' +
+  '<button class="cerrar" onclick="cerrarModal()">✕</button>' +
+  '<div class="rotulo">' + esc(p.plataforma) + ' · ' + esc(p.formato) + '</div>' +
+  '<h3 style="margin-top:12px">' + esc(p.titulo) + '</h3>' +
+  '<p class="guia">' + fechaLarga(p.fecha) + ' · ' + esc(p.pilar || 'Sin pilar') +
+    ' · <span class="insignia ' + claseEstado(p.estado) + '">' + p.estado + '</span></p>' +
+  (p.copy ? '<div class="respuesta" style="margin-bottom:18px"><strong>Copy</strong>' + esc(p.copy) +
+    (p.hashtags ? '<div style="color:var(--malva);margin-top:8px">' + esc(p.hashtags) + '</div>' : '') + '</div>' : '') +
+  '<div class="meta" style="border-top:none;padding-top:0">' +
+    dato('Alcance', num(m.alcance)) + dato('Vistas', num(m.vistas)) +
+    dato('Interacciones', num(m.interacciones)) + dato('Tasa', tasaInteraccion(p)) +
+  '</div>' +
+  '<div class="meta" style="margin-top:18px">' +
+    dato('Me gusta', num(m.me_gusta)) + dato('Comentarios', num(m.comentarios)) +
+    dato('Compartidos', num(m.compartidos)) + dato('Guardados', num(m.guardados)) +
+  '</div>' +
+  '<div class="meta" style="margin-top:18px">' +
+    dato('Clics al enlace', num(m.clics_enlace)) +
+    dato('Seguidores al publicar', num(m.seguidores_al_publicar)) +
+    dato('Medido el', m.medido_el ? fechaLarga(m.medido_el) : '—') +
+  '</div>' +
+  '<div class="meta" style="margin-top:18px">' +
+    dato('Permalink', enlaceMini(p.permalink,'Abrir')) +
+    dato('Archivo final', enlaceMini(p.archivoFinal,'Abrir')) +
+    (admin ? dato('Creativo', enlaceMini(p.creativoFigma,'Abrir')) +
+             dato('ID Media', esc(p.idMedia || '—')) : '') +
+  '</div>' +
+  '<div class="pie-hoja">' + (admin ?
+    '<button class="boton fantasma" onclick="formPublicacion(' + p.clienteId + ',' + p.id + ')">Editar</button>' : '') +
+    '<button class="boton" onclick="cerrarModal()">Cerrar</button></div></div></div>';
+}
+
+function formPublicacion(clienteId, id){
+  const p = id ? publicaciones.find(x => x.id === id) :
+    {clienteId, titulo:'', clienteTexto:nombreCliente(clienteId), estado:'Planificada', fecha:HOY,
+     plataforma:'Instagram', formato:'Reel', pilar:'Producto', copy:'', hashtags:'',
+     idMedia:'', permalink:'', archivoFinal:'', creativoFigma:'', m:{}};
+  const sel = (idc,rot,ops,val) => '<div class="campo"><span>' + rot + '</span><select id="' + idc + '">' +
+    ops.map(o => '<option' + (o===val?' selected':'') + '>' + o + '</option>').join('') + '</select></div>';
+  document.getElementById('capaModal').innerHTML =
+  '<div class="telon" onclick="if(event.target===this)cerrarModal()"><div class="hoja">' +
+  '<button class="cerrar" onclick="cerrarModal()">✕</button>' +
+  '<h3>' + (id ? 'Editar publicación' : 'Nueva publicación') + '</h3>' +
+  '<p class="guia">Los datos de rendimiento se completan solos al importar el JSON. Acá cargás lo que Meta no entrega.</p>' +
+  '<div class="fila">' + inp('puTitulo','Publicación',p.titulo) + inp('puFecha','Fecha',p.fecha,'date') + '</div>' +
+  '<div class="fila">' + sel('puPlataforma','Plataforma',['Instagram','Facebook'],p.plataforma) +
+    sel('puFormato','Formato',['Reel','Carrusel','Imagen','Historia','Video'],p.formato) + '</div>' +
+  '<div class="fila">' + sel('puEstado','Estado',ESTADOS_PUB,p.estado) +
+    sel('puPilar','Pilar',PILARES,p.pilar) + '</div>' +
+  '<div class="campo"><span>Copy / Caption</span><textarea id="puCopy" rows="3">' + esc(p.copy) + '</textarea></div>' +
+  inp('puHashtags','Hashtags',p.hashtags) +
+  '<div class="fila">' + inp('puArchivo','Archivo final (enlace)',p.archivoFinal) +
+    inp('puFigma','Creativo en Figma (enlace)',p.creativoFigma) + '</div>' +
+  '<div class="fila">' + inp('puPermalink','Permalink',p.permalink) + inp('puIdMedia','ID Media (Meta)',p.idMedia) + '</div>' +
+  '<div class="pie-hoja"><button class="boton fantasma" onclick="cerrarModal()">Cancelar</button>' +
+  '<button class="boton" onclick="guardarPublicacion(' + clienteId + ',' + (id||'null') + ')">Guardar</button></div></div></div>';
+}
+function guardarPublicacion(clienteId, id){
+  const d = {clienteId, clienteTexto:nombreCliente(clienteId),
+    titulo:document.getElementById('puTitulo').value.trim() || 'Sin título',
+    fecha:document.getElementById('puFecha').value || HOY,
+    plataforma:document.getElementById('puPlataforma').value,
+    formato:document.getElementById('puFormato').value,
+    estado:document.getElementById('puEstado').value,
+    pilar:document.getElementById('puPilar').value,
+    copy:document.getElementById('puCopy').value.trim(),
+    hashtags:document.getElementById('puHashtags').value.trim(),
+    archivoFinal:document.getElementById('puArchivo').value.trim(),
+    creativoFigma:document.getElementById('puFigma').value.trim(),
+    permalink:document.getElementById('puPermalink').value.trim(),
+    idMedia:document.getElementById('puIdMedia').value.trim()};
+  if(id){ const p = publicaciones.find(x => x.id === id); Object.assign(p, d); }
+  else publicaciones.push(Object.assign({id:siguientePublicacion++, m:{}}, d));
+  cerrarModal(); pintarAdmin(); avisar('Publicación guardada');
+}
+
+/* Conciliación al importar: 1) ID Media  2) Permalink  3) fecha + plataforma sin permalink */
+function conciliarPublicaciones(clienteId, lista){
+  let creadas = 0, actualizadas = 0, vinculadas = 0;
+  lista.forEach(d => {
+    const propias = publicaciones.filter(x => x.clienteId === clienteId);
+    let p = null, via = '';
+    if(d.id_media) p = propias.find(x => x.idMedia && x.idMedia === String(d.id_media));
+    if(p) via = 'id';
+    if(!p && d.permalink){ p = propias.find(x => x.permalink && x.permalink === d.permalink); if(p) via = 'permalink'; }
+    if(!p && d.fecha){
+      const cand = propias.filter(x => !x.permalink && x.fecha === d.fecha &&
+        (!d.plataforma || x.plataforma === d.plataforma));
+      if(cand.length === 1){ p = cand[0]; via = 'agenda'; }
+    }
+    const m = d.metricas || {};
+    if(p){
+      p.idMedia = String(d.id_media || p.idMedia || '');
+      p.permalink = d.permalink || p.permalink;
+      if(d.titulo) p.titulo = d.titulo;
+      if(d.formato) p.formato = d.formato;
+      if(d.plataforma) p.plataforma = d.plataforma;
+      if(d.copy) p.copy = d.copy;
+      if(d.hashtags) p.hashtags = d.hashtags;
+      if(d.fecha) p.fecha = d.fecha;
+      p.m = Object.assign({}, p.m, m);
+      if(Object.keys(m).length) p.estado = 'Medida';
+      via === 'agenda' ? vinculadas++ : actualizadas++;
+    } else {
+      publicaciones.push({id:siguientePublicacion++, clienteId, clienteTexto:nombreCliente(clienteId),
+        titulo:d.titulo || 'Publicación sin título', fecha:d.fecha || HOY,
+        plataforma:d.plataforma || 'Instagram', formato:d.formato || 'Reel',
+        estado:Object.keys(m).length ? 'Medida' : 'Publicada', pilar:d.pilar || '',
+        copy:d.copy || '', hashtags:d.hashtags || '', idMedia:String(d.id_media || ''),
+        permalink:d.permalink || '', archivoFinal:'', creativoFigma:'', m:m});
+      creadas++;
+    }
+  });
+  return {creadas, actualizadas, vinculadas};
+}
+
+/* --- cuenta --- */
+function vistaCuenta(){
+  return '<div class="encabezado-panel"><div><h1>Cuenta</h1>' +
+    '<p>Tu acceso y las conexiones del panel.</p></div></div>' +
+    '<div style="max-width:560px">' +
+    '<div class="campo"><span>Correo de administración</span><input type="text" value="catalinaavendanio@gmail.com"></div>' +
+    '<div class="fila"><div class="campo"><span>Clave actual</span><input type="password" placeholder="••••••••"></div>' +
+    '<div class="campo"><span>Clave nueva</span><input type="password" placeholder="••••••••"></div></div>' +
+    '<button class="boton" onclick="avisar(\'Clave actualizada\')">Actualizar clave</button>' +
+    '<h4 style="font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--malva);margin:38px 0 14px">Conexiones</h4>' +
+    '<div class="banda-notion"><span class="marca-fuente">Meta Graph API</span>' +
+    'Origen de las métricas. Un token por cada marca que administrás.' +
+    '<button class="boton chico fantasma" style="margin-left:auto" onclick="avisar(\'Tokens verificados\')">Verificar tokens</button></div>' +
+    '<div class="banda-notion"><span class="marca-fuente">Notion</span>' +
+    'Base donde quedan guardados los números. El panel lee de acá y cada cliente ve solo su marca.' +
+    '<button class="boton chico fantasma" style="margin-left:auto" onclick="avisar(\'Sincronizado\')">Sincronizar ahora</button></div>' +
+    '</div>';
+}
+
+/* ============ PORTAL DE CLIENTE ============ */
+function pestanaCliente(v, btn){
+  vistaCliente = v;
+  document.querySelectorAll('#menuCliente button').forEach(b => b.classList.remove('activo'));
+  btn.classList.add('activo');
+  pintarCliente();
+}
+function pintarCliente(){
+  if(!sesion || sesion.rol !== 'cliente') return;
+  const id = sesion.clienteId;
+  const c = clientes.find(x => x.id === id);
+  const a = document.getElementById('areaCliente');
+  if(vistaCliente === 'calendario'){
+    a.innerHTML = '<div class="encabezado-panel"><div><h1>Calendario</h1>' +
+      '<p>Grabaciones, entregas y publicaciones acordadas con Catalina.</p></div></div>' +
+      bloqueCalendario(id, false);
+  } else if(vistaCliente === 'publicaciones'){
+    a.innerHTML = '<div class="encabezado-panel"><div><h1>Publicaciones</h1>' +
+      '<p>Cada pieza publicada, con su rendimiento y el archivo final.</p></div></div>' +
+      bloquePublicaciones(id, false);
+  } else if(vistaCliente === 'pedidos'){
+    a.innerHTML = '<div class="encabezado-panel"><div><h1>Mis pedidos</h1>' +
+      '<p>Contá qué necesitás y sumá una imagen de referencia si tenés.</p></div>' +
+      '<button class="boton" onclick="formPedido()">+ Nuevo pedido</button></div>' +
+      bloquePedidos(id, false);
+  } else {
+    a.innerHTML = '<div class="encabezado-panel"><div><h1>Métricas</h1>' +
+      '<p>Cómo viene rindiendo el contenido de ' + esc(c.marca) + '.</p></div></div>' +
+      bloqueMetricas(id, false);
+  }
+}
+function formPedido(){
+  document.getElementById('capaModal').innerHTML =
+  '<div class="telon" onclick="if(event.target===this)cerrarModal()"><div class="hoja" style="max-width:540px">' +
+  '<button class="cerrar" onclick="cerrarModal()">✕</button><h3>Nuevo pedido</h3>' +
+  '<p class="guia">Contá qué necesitás, para cuándo y cualquier detalle que ayude.</p>' +
+  '<div class="campo"><span>Qué necesitás</span><textarea id="pTexto" rows="5" placeholder="Tres videos verticales para la colección nueva, con foco en la textura de la tela."></textarea></div>' +
+  '<div class="campo"><span>Imagen de referencia (opcional)</span>' +
+  '<input id="pImagen" type="file" accept="image/*" onchange="previsualizar(this)">' +
+  '<div id="previa"></div></div>' +
+  '<div class="pie-hoja"><button class="boton fantasma" onclick="cerrarModal()">Cancelar</button>' +
+  '<button class="boton" onclick="enviarPedido()">Enviar pedido</button></div></div></div>';
+}
+function previsualizar(inputEl){
+  const f = inputEl.files && inputEl.files[0];
+  if(!f) return;
+  const lector = new FileReader();
+  lector.onload = ev => {
+    imagenTemporal = ev.target.result;
+    document.getElementById('previa').innerHTML = '<img class="previsualizacion" src="' + imagenTemporal + '" alt="Referencia">';
+  };
+  lector.readAsDataURL(f);
+}
+function enviarPedido(){
+  const t = document.getElementById('pTexto').value.trim();
+  if(!t){ avisar('Escribí qué necesitás'); return; }
+  pedidos.unshift({id:siguientePedido++, clienteId:sesion.clienteId, fecha:HOY, texto:t,
+    imagen:imagenTemporal, estado:'Nuevo', respuesta:''});
+  cerrarModal(); pintarCliente(); avisar('Pedido enviado');
+}
+
+/* ============ INICIO ============ */
+function iniciar(){
+  try{
+    ['correo','clave'].forEach(id => document.getElementById(id)
+      .addEventListener('keydown', e => { if(e.key === 'Enter') entrar(); }));
+    pintarTira();
+    enrutar();
+  }catch(err){
+    console.error(err);
+    document.getElementById('capaAviso').innerHTML =
+      '<div class="aviso">Error al iniciar: ' + err.message + '</div>';
+  }
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar);
+else iniciar();
+</script>
+
+</body>
+</html>

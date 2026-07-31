@@ -1,0 +1,83 @@
+name: Integración continua
+
+on:
+  push:
+    branches: [main, develop, "fase/**"]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: catalina_test
+          POSTGRES_USER: catalina
+          POSTGRES_PASSWORD: catalina
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U catalina"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      APP_ENV: testing
+      DB_CONNECTION: sqlite
+      DB_DATABASE: ":memory:"
+
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Configurar PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: pdo_pgsql, redis, gd, intl, bcmath, zip, opcache
+          coverage: xdebug
+
+      - name: Configurar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Instalar dependencias de PHP
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Instalar dependencias de Node
+        run: npm ci
+
+      - name: Compilar assets
+        run: npm run build
+
+      - name: Preparar entorno
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Formato (Pint)
+        run: ./vendor/bin/pint --test
+
+      - name: Análisis estático (Larastan)
+        run: ./vendor/bin/phpstan analyse --memory-limit=1G
+
+      - name: Pruebas (Pest) con cobertura
+        run: php artisan test --coverage --min=70
+
+      - name: Auditoría de dependencias
+        run: composer audit
