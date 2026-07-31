@@ -6,6 +6,7 @@ use App\Livewire\Auth\RestablecerClave;
 use App\Livewire\Auth\VerificarSegundoFactor;
 use App\Livewire\EnConstruccion;
 use App\Livewire\Panel\ConfigurarSegundoFactor;
+use App\Livewire\Panel\Videos\Listado as PanelVideosListado;
 use App\Livewire\Publico\Portada;
 use App\Models\Video;
 use Illuminate\Support\Facades\Auth;
@@ -41,8 +42,7 @@ Route::post('/salir', function () {
 // ------------------------------------------------------------------ Panel --
 Route::prefix('panel')->name('panel.')->middleware(['rol.admin', 'segundo.factor'])->group(function () {
     Route::redirect('/', '/panel/videos')->name('inicio');
-    Route::get('/videos', EnConstruccion::class)->name('videos')
-        ->defaults('titulo', 'Videos')->defaults('descripcion', 'Gestión de videos del portfolio. Se construye en la fase 3.');
+    Route::get('/videos', PanelVideosListado::class)->name('videos');
     Route::get('/clientes', EnConstruccion::class)->name('clientes')
         ->defaults('titulo', 'Clientes')->defaults('descripcion', 'Alta y ficha de clientes. Se construye en la fase 4.');
     Route::get('/pedidos', EnConstruccion::class)->name('pedidos')
