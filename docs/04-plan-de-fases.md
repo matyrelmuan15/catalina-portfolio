@@ -1,7 +1,7 @@
 # Plan de fases
 
-**Versión:** 1.0
-**Fecha:** 31 de julio de 2026
+**Versión:** 1.1
+**Fecha:** 1 de agosto de 2026
 
 Once fases, de la 0 a la 10. Cada una entrega algo verificable. **Ninguna fase se cierra sin actualizar `AVANCE.md`.**
 
@@ -26,24 +26,35 @@ Estimaciones para una persona con dedicación parcial. Ajustar según el equipo 
 
 **Alcance**
 
-- Repositorio con la estructura de `README.md` y los cuatro documentos.
+- Repositorio con la estructura de `README.md` y los seis documentos.
 - `AVANCE.md` creado, con la primera entrada.
 - Laravel 12 con PHP 8.3, Livewire 3, Tailwind 4, Pest, Pint y Larastan.
-- `Dockerfile` y `docker-compose.yml` con aplicación, PostgreSQL y Redis.
-- Proyecto en Railway con los cinco servicios y los dos entornos.
+- **`composer.json` con `config.platform.php` fijado en la versión de producción.** Regla 3 de la sección 3.3 de `docs/02`.
+- Entorno local sobre Herd, con PostgreSQL 16 nativo y Redis. **Sin Docker y sin `docker-compose.yml`.**
+- Proyecto en Railway con los cinco servicios y los dos entornos, desplegando por Nixpacks.
+- Verificación de que las extensiones de PHP requeridas están presentes en el build de Railway.
 - Dominio en Cloudflare, proxy activo, TLS estricto, `TRUSTED_PROXIES` configurado.
-- Buckets de R2 creados y disco `r2` configurado en Laravel.
-- GitHub Actions con los cinco pasos de integración.
+- Dos buckets de R2 creados y discos `r2_publico` y `r2_privado` configurados en Laravel.
+- GitHub Actions con los cinco pasos de integración y un **servicio `postgres:16`** para las pruebas.
+- `phpunit.xml` sin `DB_CONNECTION=sqlite`, y workflow sin variables de entorno que lo pisen.
+- Prueba que verifica que el driver activo es `pgsql`.
 - Ruta `/up` respondiendo y usada como comprobación de estado.
 
 **Criterios de aceptación**
 
 - Un push a `develop` despliega a staging solo y el sitio responde por HTTPS con certificado válido.
 - El worker procesa un trabajo de prueba.
-- Un archivo subido a R2 se lee desde la aplicación.
+- Un archivo subido al disco `r2_publico` se lee desde la aplicación.
+- Un archivo subido al disco `r2_privado` se lee desde la aplicación.
 - La integración continua corre entera en verde.
+- **La prueba de driver confirma `pgsql` tanto en local como en integración continua.**
+- La versión de PHP del build de Railway coincide con la fijada en `composer.json`.
 
-**Riesgo.** La configuración de proxy de Cloudflare. Si `TRUSTED_PROXIES` queda mal, el límite de intentos de ingreso bloqueará a todos los usuarios a la vez y se descubre tarde. Verificar en esta fase que la aplicación registra la IP real del visitante.
+**Riesgos**
+
+1. **Configuración de proxy de Cloudflare.** Si `TRUSTED_PROXIES` queda mal, el límite de intentos de ingreso bloqueará a todos los usuarios a la vez y se descubre tarde. Verificar en esta fase que la aplicación registra la IP real del visitante.
+2. **Pruebas contra el motor equivocado.** Es la falla más silenciosa de esta fase: todo pasa en verde mientras el código se valida contra un motor que no es el de producción. Se resuelve en dos archivos —`phpunit.xml` y el workflow— y no en uno. Ver sección 10.2 de `docs/02`.
+3. **Extensiones ausentes en el build.** Sin imagen propia, las extensiones dependen de lo que resuelva Nixpacks. Una que falte no rompe el build: rompe la primera pantalla que la use. Verificarlas ahora.
 
 **Estimación.** 3 a 4 días.
 
@@ -299,12 +310,23 @@ Estimaciones para una persona con dedicación parcial. Ajustar según el equipo 
 - Carga de datos reales: videos, clientes y primer período de métricas.
 - Publicación del dominio definitivo.
 
+**Verificaciones propias del despliegue sin imagen propia**
+
+Como el entorno de producción no se reproduce localmente, estas comprobaciones se hacen contra el servidor real y no se dan por sabidas:
+
+- La versión de PHP en producción coincide con `config.platform.php` de `composer.json`.
+- Todas las extensiones requeridas están presentes: `pdo_pgsql`, `redis`, `gd`, `intl`, `bcmath`, `zip`, `opcache`.
+- OPcache está activo y con la configuración esperada.
+- Los buscadores del sistema encuentran resultados escribiendo en minúscula. Es la comprobación de campo de la regla 1: PostgreSQL distingue mayúsculas en `LIKE`.
+- Los listados ordenados alfabéticamente ubican correctamente palabras con tilde y con eñe. Comprobación de campo de la regla 2.
+
 **Criterios de aceptación**
 
 - La batería de aislamiento pasa entera contra producción.
 - Una restauración de respaldo en staging se completó y se verificó.
 - El manual permite operar el sistema sin asistencia.
 - Cabeceras de seguridad verificadas con herramienta externa.
+- Las cinco verificaciones de despliegue de arriba, comprobadas en producción.
 
 **Estimación.** 5 a 6 días.
 

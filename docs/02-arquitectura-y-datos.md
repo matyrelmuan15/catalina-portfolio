@@ -1,7 +1,7 @@
 # Arquitectura, modelo de datos e infraestructura
 
-**Versión:** 1.0
-**Fecha:** 31 de julio de 2026
+**Versión:** 1.1
+**Fecha:** 1 de agosto de 2026
 **Documento hermano:** `01-especificacion-funcional.md`
 
 ---
@@ -10,7 +10,7 @@
 
 | Capa | Elección | Motivo |
 |---|---|---|
-| Lenguaje | PHP 8.3 | Requerido por Laravel 12 |
+| Lenguaje | PHP 8.3 | Fijado en `composer.json` y en Railway, no por una imagen |
 | Framework | Laravel 12 | Autenticación, autorización, colas, migraciones y almacenamiento ya resueltos |
 | Interfaz | Livewire 3 + Alpine.js | El sistema es un panel con formularios y tablas; una SPA agregaría una capa de API sin beneficio |
 | Estilos | Tailwind CSS 4 | El mockup ya está resuelto con utilidades |
@@ -20,6 +20,8 @@
 | Pruebas | Pest | |
 | Análisis estático | Larastan nivel 6 | |
 | Formato | Laravel Pint | |
+
+**Sobre la versión de PHP.** No se usa una imagen propia para fijarla. Se declara en dos lugares: `config.platform.php` en `composer.json` y la configuración de Railway. Ver la sección 7.2, donde esto es una regla del proyecto y no una recomendación.
 
 **Por qué no una API separada con front en JavaScript.** Hay un solo consumidor —el navegador—, no hay aplicación móvil prevista y el equipo es chico. Livewire entrega la interactividad necesaria sin mantener dos proyectos ni un contrato de API. Si en el futuro aparece una app móvil, se agrega una capa de API sobre la misma lógica de dominio.
 
@@ -175,6 +177,50 @@ clientes 1─n importaciones
 videos                      (sin relación: cliente es texto libre)
 ```
 
+### 3.3 Reglas de consulta y ordenamiento
+
+Tres reglas que no son preferencias de estilo: son defensas contra fallas que ya se produjeron en una implementación anterior de este mismo sistema y que el entorno de desarrollo tapaba.
+
+#### Regla 1 — Búsquedas de texto siempre con `whereLike` insensible
+
+```php
+// Correcto
+$query->whereLike('marca', "%{$termino}%", caseSensitive: false);
+
+// Prohibido
+$query->where('marca', 'like', "%{$termino}%");
+```
+
+**Motivo.** PostgreSQL distingue mayúsculas en `LIKE`; SQLite no. Un buscador escrito con `LIKE` crudo funciona perfecto en desarrollo sobre SQLite y en producción no encuentra nada, salvo que el usuario escriba las mayúsculas exactas. El error no aparece en las pruebas si estas corren contra un motor distinto al de producción, que es exactamente por qué la sección 10 exige que corran contra PostgreSQL.
+
+`whereLike(..., caseSensitive: false)` de Laravel 12 traduce a `ILIKE` en PostgreSQL y mantiene el comportamiento esperado en cualquier motor. Aplica a todo buscador del sistema: videos, clientes, publicaciones y pedidos.
+
+#### Regla 2 — Collation explícita en las columnas de texto que se ordenan
+
+Las columnas `clientes.marca`, `clientes.contacto`, `publicaciones.titulo` y `videos.titulo` declaran su collation en la migración:
+
+```php
+$table->string('marca', 120)->collation('es-AR-x-icu');
+```
+
+**Motivo.** Sin declararla, el orden alfabético hereda la collation del sistema operativo, que difiere entre la máquina de desarrollo y Railway. El resultado es un listado que en local ordena "Ñandú" entre "Nube" y "Ocaso", y en producción lo manda después de la Z. Es un error que nadie reporta como falla pero que hace ver desprolijo el panel.
+
+**No usar collations no deterministas.** En PostgreSQL 16 rompen `LIKE` e `ILIKE` sobre esas columnas, lo que choca de frente con la regla 1.
+
+#### Regla 3 — `composer.json` fija la versión de PHP de producción
+
+```json
+{
+  "config": {
+    "platform": {
+      "php": "8.3.0"
+    }
+  }
+}
+```
+
+**Motivo.** Sin ese pin, Composer resuelve las dependencias contra la versión de PHP de la máquina donde se ejecuta. Si esa versión es más nueva que la de producción, el `composer.lock` resultante puede exigir paquetes que no se instalan en el servidor, y la falla aparece recién en el despliegue. El pin desacopla la resolución de dependencias del PHP local, que es justamente lo que se necesita ahora que no hay una imagen que uniforme el entorno.
+
 ---
 
 ## 4. Servicio de importación
@@ -264,21 +310,34 @@ El sistema guarda datos de contacto de clientes y sus métricas de redes. No gua
 
 **Los tres procesos van separados a propósito.** Si el worker se cae procesando un correo, el sitio sigue en pie. Si se despliega una versión nueva, la cola se drena sin cortar peticiones web.
 
-### 7.2 Imagen
+### 7.2 Construcción
 
-Se usa un `Dockerfile` propio, no la detección automática. Da control sobre la versión de PHP, las extensiones y OPcache, y hace reproducible el entorno local.
+**Se usa la detección automática de Railway (Nixpacks). No hay `Dockerfile` propio ni `docker-compose.yml` en este proyecto.**
 
-Base recomendada: `serversideup/php:8.3-fpm-nginx`, que ya trae PHP-FPM y nginx configurados para Laravel.
+Esta decisión reemplaza a la anterior, que sí definía una imagen propia. El motivo del cambio: mantener una imagen propia solo tiene sentido si se la reproduce localmente, y eso obliga a instalar Docker y WSL2 en la máquina de desarrollo. En la práctica ese camino trajo bloqueos por permisos de Windows y un costo de mantenimiento que este proyecto no justifica. Railway con Nixpacks ya funcionó sin fricción en otros proyectos del mismo autor, con el entorno local resuelto con Herd.
 
-Extensiones necesarias: `pdo_pgsql`, `redis`, `gd` o `imagick`, `intl`, `bcmath`, `zip`, `opcache`.
+**La versión de PHP se fija en dos lugares, no en una imagen:**
+
+1. `config.platform.php` en `composer.json` — controla contra qué versión resuelve Composer las dependencias. Ver regla 3 de la sección 3.3.
+2. La configuración de PHP en Railway — controla qué binario corre en el servidor.
+
+Ambos valores deben coincidir. Si divergen, el `composer.lock` se genera contra una versión y se instala contra otra.
+
+**Extensiones necesarias:** `pdo_pgsql`, `redis`, `gd`, `intl`, `bcmath`, `zip`, `opcache`. Nixpacks resuelve la mayoría a partir de las dependencias declaradas en `composer.json`; las que falten se agregan por configuración de Railway. **Verificarlas en el primer despliegue**, no darlas por sentadas: una extensión ausente se manifiesta como un error de ejecución en la primera pantalla que la use, no en el build.
+
+**Compensación aceptada.** Sin imagen propia, el entorno local y el de producción no son idénticos. La contrapartida está en la sección 10: las pruebas corren contra PostgreSQL en integración continua, que es donde importa que el entorno se parezca a producción.
 
 ### 7.3 Entornos
 
-| Entorno | Rama | Dominio | Base de datos |
-|---|---|---|---|
-| Local | — | `localhost` | Docker |
-| Staging | `develop` | `staging.dominio` | Propia |
-| Producción | `main` | `dominio` | Propia, con respaldos |
+| Entorno | Rama | Dominio | Base de datos | Ejecución |
+|---|---|---|---|---|
+| Local | — | `.test` de Herd | PostgreSQL 16 nativo | Herd + Redis |
+| Staging | `develop` | `staging.dominio` | Complemento de Railway | Nixpacks |
+| Producción | `main` | `dominio` | Complemento de Railway, con respaldos | Nixpacks |
+
+**Entorno local.** Laravel Herd para PHP y el servidor web, PostgreSQL 16 instalado de forma nativa y Redis. Sin Docker y sin WSL2.
+
+**PostgreSQL también en local, no SQLite.** Es lo que hace visibles en desarrollo los problemas de las reglas 1 y 2 de la sección 3.3. Usar SQLite localmente los oculta hasta el despliegue.
 
 **Staging nunca comparte base de datos con producción.** Se puebla con seeders o con una copia anonimizada.
 
@@ -305,8 +364,9 @@ APP_NAME, APP_ENV, APP_KEY, APP_DEBUG=false, APP_URL
 DB_CONNECTION=pgsql, DATABASE_URL
 REDIS_URL
 QUEUE_CONNECTION=redis, CACHE_STORE=redis, SESSION_DRIVER=database
-FILESYSTEM_DISK=r2
-R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET, R2_ENDPOINT, R2_URL
+R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_ENDPOINT
+R2_BUCKET_PUBLICO, R2_URL_PUBLICO
+R2_BUCKET_PRIVADO
 MAIL_MAILER, MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD, MAIL_FROM_ADDRESS
 TRUSTED_PROXIES=*
 ```
@@ -369,3 +429,31 @@ En cada push, GitHub Actions ejecuta:
 5. `composer audit`
 
 Una rama no se fusiona a `develop` si algún paso falla. Cobertura mínima exigida: 70 % general, **100 % en el servicio de importación y en las pruebas de aislamiento entre clientes**.
+
+### 10.1 Las pruebas corren contra PostgreSQL
+
+El workflow levanta un servicio `postgres:16` y las pruebas se ejecutan contra él. **Nunca contra SQLite.**
+
+Este es el punto donde se detectan las fallas de las reglas 1 y 2 de la sección 3.3. Correr las pruebas contra un motor distinto al de producción convierte a la batería de pruebas en un certificado de que el código funciona en un entorno que no existe.
+
+### 10.2 Dos trampas de configuración que hay que revisar
+
+Ambas producen el mismo síntoma —las pruebas corren contra el motor equivocado sin avisar— y ambas ya ocurrieron.
+
+**Trampa 1 — `phpunit.xml`.** El archivo **no debe** fijar `DB_CONNECTION=sqlite`. Es el valor que trae Laravel por defecto en varios esqueletos y pasa desapercibido porque las pruebas igual pasan.
+
+```xml
+<!-- Quitar o comentar estas líneas -->
+<env name="DB_CONNECTION" value="sqlite"/>
+<env name="DB_DATABASE" value=":memory:"/>
+```
+
+**Trampa 2 — variables de entorno a nivel job en GitHub Actions.** Una variable definida en el bloque `env` del job **pisa lo que diga `phpunit.xml`**. Corregir uno de los dos lugares y no el otro deja el problema intacto, con la agravante de que quien lo corrigió cree que ya está resuelto.
+
+**Verificar los dos archivos, siempre.** Y comprobarlo empíricamente: una prueba que consulte el driver activo y falle si no es `pgsql` cierra la discusión de una vez.
+
+```php
+it('corre contra PostgreSQL', function () {
+    expect(DB::connection()->getDriverName())->toBe('pgsql');
+});
+```
