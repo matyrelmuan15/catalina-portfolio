@@ -97,8 +97,9 @@ No se usa Docker. Se necesita:
 
 - **Laravel Herd** — provee PHP 8.3, Composer y el servidor web con dominios `.test`
 - **PostgreSQL 16** instalado de forma nativa
-- **Redis**
 - **Node 20 o superior**
+
+Redis corre solo en Railway (`QUEUE_CONNECTION=sync` y `CACHE_STORE=file` en local): a diferencia de SQLite contra PostgreSQL, no hay una clase de bug que quede oculta por resolver colas y caché en línea durante el desarrollo.
 
 ### Puesta en marcha
 

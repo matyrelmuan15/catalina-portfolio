@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /panel/
+Disallow: /portal/
+Disallow: /ingresar
+Disallow: /clave/
+Disallow: /archivos/
+
+Sitemap: /sitemap.xml
