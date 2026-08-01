@@ -13,7 +13,14 @@
     --color-fucsia: #e4006e;
     --color-fucsia-hondo: #a80352;
     --color-tinta: #2b0a1b;
-    --color-malva: #9a7f8c;
+    /*
+        Malva oscurecido desde el #9a7f8c del mockup: ese valor da 3,39:1 sobre
+        porcelana y 3,63:1 sobre blanco, por debajo del mínimo de 4,5:1 que fija
+        docs/01, sección de accesibilidad. Se conservó matiz y saturación
+        (HSL 331/12%) y se bajó solo la luminosidad, de 55,1% a 47,1%, hasta el
+        tono más claro que cumple en los dos fondos: 4,52:1 y 4,83:1.
+    */
+    --color-malva: #866a78;
     --color-rosa-humo: #f6dce6;
     --color-linea: #eadce3;
 }
