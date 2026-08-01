@@ -1,0 +1,73 @@
+name: Integración continua
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+# Nota para quien toque este archivo: NO agregar variables DB_* (ni ninguna otra
+# que pise phpunit.xml) en el bloque "env" del job. phpunit.xml ya fija la
+# conexión de pruebas contra PostgreSQL; una variable acá encima la pisaría en
+# silencio y las pruebas volverían a correr contra el motor equivocado sin que
+# nada lo avise. Ver docs/02-arquitectura-y-datos.md, sección 10.2.
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: catalina_portfolio_testing
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: pdo_pgsql, redis, gd, intl, bcmath, zip, opcache
+          coverage: pcov
+
+      - name: Configurar Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependencias de Composer
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Instalar dependencias de npm
+        run: npm ci
+
+      - name: Preparar archivo de entorno
+        run: cp .env.example .env && php artisan key:generate
+
+      - name: Compilar recursos
+        run: npm run build
+
+      - name: Formato — Pint
+        run: ./vendor/bin/pint --test
+
+      - name: Análisis estático — Larastan
+        run: ./vendor/bin/phpstan analyse --memory-limit=1G
+
+      - name: Pruebas automatizadas — Pest
+        run: php artisan test --coverage --min=70
+
+      - name: Auditoría de dependencias
+        run: composer audit
