@@ -44,6 +44,8 @@ Decisiones tomadas que condicionan el desarrollo. Si una se revierte, se anota e
 |---|---|---|
 | 01/08/2026 | Laravel se fija en `^12.0` explícitamente en `composer.json` | El instalador de Composer resuelve Laravel 13 por defecto en este momento; la documentación pide Laravel 12 |
 | 01/08/2026 | `larastan/larastan` en `^3.0`, no `^2.x` | La línea 2.x no soporta Laravel 12 en las versiones publicadas hoy |
+| 01/08/2026 | Malva pasa de `#9a7f8c` a `#866a78`. **Pendiente de aprobación visual de Catalina**: técnicamente ya cumple la regla, pero es un cambio de identidad y no se considera definitivo hasta que ella lo vea | El valor del mockup da 3,39:1 sobre porcelana, por debajo del mínimo de 4,5:1 que fija la sección 13 de `docs/01`. Entre un valor extraído y una regla explícita, manda la regla. Se conservó matiz y saturación y se bajó solo la luminosidad |
+| 01/08/2026 | El proyecto sigue fijado en PHP 8.3; no se sube a 8.4 | No se pudo verificar con certeza que Railway/Nixpacks resuelva 8.4 sin fricción: el proyecto nunca se desplegó ahí y Railway está migrando de Nixpacks a Railpack. Las dependencias sí lo admiten. Ver la entrada de bitácora del 01/08/2026 |
 | 01/08/2026 | El scope `PerteneceAlCliente` **sí se aplica** al modelo `User`, con una guarda `Auth::hasUser()` al inicio de `apply()` | Revierte la exclusión registrada antes el mismo día. La recursión existía y era real, pero se resolvía con la guarda: mientras el guard resuelve la sesión todavía no tiene usuario asignado, así que el scope se salta exactamente en ese instante y vuelve a aplicar en el resto de las consultas. Ver la entrada de bitácora del 01/08/2026 |
 | 01/08/2026 | Autenticación implementada a mano (Auth::attempt + Password broker + `pragmarx/google2fa`), sin Laravel Fortify | Fortify exige columnas adicionales para 2FA (`two_factor_recovery_codes`, `two_factor_confirmed_at`) que no están en el esquema de `users` que define `docs/02` |
 | 01/08/2026 | El filtro de categorías del portfolio público se resuelve con Alpine.js puro, sin ida y vuelta a Livewire | Cumple el criterio de la Fase 2 ("el filtro responde en menos de 100 ms"); la página pública tampoco carga el bundle de Livewire, solo Tailwind + un entrypoint propio de Alpine (`resources/js/publico.js`), lo que ayuda además al puntaje de Lighthouse. Auth, panel y portal sí usan Livewire, como pide `docs/02` |
@@ -76,13 +78,100 @@ Decisiones tomadas que condicionan el desarrollo. Si una se revierte, se anota e
 | 9 | Códigos de respaldo para el segundo factor de la administradora (hoy, si pierde el dispositivo, no hay salida salvo restablecer el secreto a mano en la base) | 1 | Media |
 | 10 | UI para que un cliente active su propio segundo factor (el campo y el servicio ya existen; RF-93 lo pide opcional, pero no hay pantalla para eso todavía) | 1 | Baja |
 | 11 | Verificar el comportamiento real en Chrome, Safari, Firefox y Edge. Lighthouse ya corrió local en headless (ver entrada del 01/08/2026): queda el recorrido manual en navegadores reales | 2 | Alta |
-| 12 | Correr el workflow de integración continua dentro de GitHub Actions al menos una vez. **No corrió todavía**: `ci.yml` solo se dispara con `push` a `main`/`develop` o con `pull_request` hacia esas ramas, y la rama de trabajo es `fase/0-3-fundaciones`. Se resuelve abriendo el PR hacia `develop` o agregando `fase/**` a los disparadores | 0 | Alta |
-| 13 | Subir la accesibilidad del portfolio de 93 a ≥95: falla `color-contrast` en `.enlace-sesion`, `.rotulo` y un `<p>`. Es un cambio de paleta sobre el mockup, así que lo decide Catalina | 2 | Media |
-| 14 | Herd resuelve `php` a 8.4.23, pero `composer.json` fija la plataforma en 8.3 y CI usa 8.3. Las pruebas locales de este lote corrieron sobre 8.4; conviene alinear el PHP local para que la diferencia no esconda nada | 0 | Baja |
+| ~~12~~ | ~~Correr el workflow de integración continua al menos una vez~~ **Resuelto el 01/08/2026**: PR #1 hacia `develop`, los trece pasos en verde | 0 | — |
+| 13 | Subir la accesibilidad del portfolio de 93 a ≥95. Ya no depende de malva: los focos que quedan son fucsia `#e4006e` sobre porcelana (4,33:1) y blanco con opacidad sobre fucsia (2,97:1 y 2,73:1). Los tres tocan la identidad visual, así que lo decide Catalina | 2 | Media |
+| 14 | Aprobación visual del nuevo malva `#866a78` por parte de Catalina | 2 | Media |
+| 15 | Alinear el PHP local con el del proyecto: Herd resuelve `php` a 8.4.23 y el proyecto está fijado en 8.3. Comando en la entrada de bitácora del 01/08/2026 | 0 | Media |
+| 16 | `composer.json` declara `"php": "^8.3"`, que permite 8.4. Nixpacks resuelve la versión de producción desde ahí, no desde `config.platform.php`: **producción podría levantar con 8.4 mientras CI prueba sobre 8.3**. Decidir si se cierra a `~8.3.0` o si se sube todo a 8.4 | 0 | Alta |
+| 17 | `railway.json` arranca con `php artisan serve`, que es el servidor de desarrollo de PHP y no está pensado para producción (un solo proceso, sin supervisión). Revisar antes de desplegar | 0 | Alta |
 
 ---
 
 ## Bitácora
+
+### 1 de agosto de 2026 — Contraste de malva, CI en verde y decisión sobre PHP 8.4
+
+**1. Malva no cumplía el contraste mínimo**
+
+El `#9a7f8c` venía del mockup y nunca se contrastó contra la regla de la sección 13 de `docs/01`, que exige 4,5:1 en texto. Da **3,39:1 sobre porcelana** y **3,63:1 sobre blanco**: no cumple. Entre un valor extraído de una maqueta y una regla explícita del propio pliego, manda la regla.
+
+Se conservaron matiz y saturación (HSL 331°, 12 %) y se bajó solo la luminosidad, de 55,1 % a 47,1 %, hasta el tono más claro de la misma familia que cumple en los dos fondos:
+
+| | Valor | Sobre porcelana `#fbf6f7` | Sobre blanco `#ffffff` |
+|---|---|---|---|
+| Anterior | `#9a7f8c` | 3,39:1 ❌ | 3,63:1 ❌ |
+| **Nuevo** | **`#866a78`** | **4,52:1** ✅ | **4,83:1** ✅ |
+
+**Queda pendiente de aprobación visual de Catalina.** Cumple la regla, pero es un cambio de identidad y no se considera definitivo hasta que ella lo vea (pendiente 14).
+
+El manual de marca no existe en el repositorio: se buscó `docs/06-manual-de-marca.md` en el árbol y en toda la historia de git, y nunca existió; solo hay `docs/01` a `docs/04`. La regla de contraste vive en la sección 13 de `docs/01`. El cambio quedó documentado acá y en un comentario en `resources/css/app.css`, donde está la única declaración de la variable en el proyecto. **No se tocó `mockup/portfolio-mockup.html`**, que también declara `--malva`: es el artefacto de referencia contra el que se compara, y modificarlo mientras el cambio espera aprobación sería borrar el punto de comparación.
+
+Verificado con Lighthouse: `.enlace-sesion` y el párrafo que fallaban por malva desaparecieron de la lista. **La auditoría `color-contrast` sigue en rojo por otros tres focos, todos de fucsia**, que no se tocaron por instrucción expresa:
+
+- `.rotulo` del hero: fucsia `#e4006e` sobre porcelana → 4,33:1
+- `#contacto .rotulo`: `rgba(255,255,255,.75)` sobre fucsia → 2,97:1
+- `.via .r` (×4): blanco con `opacity:.7` sobre fucsia → 2,73:1
+
+Corrección a la entrada anterior de esta bitácora: ahí se listaron `.enlace-sesion`, `.rotulo` y un `<p>` como si fueran todos los focos; eran los tres primeros de una lista de seis. La accesibilidad sigue en **93**.
+
+El rendimiento móvil quedó en **99**, estable en tres corridas seguidas (LCP ~1,65 s). El **91** de la medición anterior fue la primera corrida en frío, con vistas Blade sin compilar; no era representativo.
+
+**2. Integración continua: en verde**
+
+Se abrió el PR #1 de `fase/0-3-fundaciones` hacia `develop`, sin tocar los disparadores del workflow. El `pull_request` lo activó y **los trece pasos terminaron en éxito** en 1 m 14 s:
+
+| Paso | Resultado |
+|---|---|
+| Composer install | ✅ |
+| npm ci | ✅ |
+| Pint | ✅ |
+| Larastan | ✅ |
+| Pest | ✅ 99 pruebas, 198 aserciones |
+| composer audit | ✅ sin advisories |
+
+La incógnita que quedaba abierta —la cobertura mínima del 70 %, que no se podía medir en local por falta de PCOV— **quedó resuelta: 95,7 %**.
+
+**3. PHP 8.4: se investigó y se decidió NO subir**
+
+- **Dependencias: dan bien.** Todas declaran rangos que incluyen 8.4 por semver: `laravel/framework` 12.64.0 `^8.2`, `intervention/image` 3.11.8 `^8.1`, `bacon/bacon-qr-code` 3.1.1 `^8.1`, `pragmarx/google2fa` 8.0.3 `^7.1|^8.0`, `larastan/larastan` 3.10.0 `^8.2`, `livewire` 3.8.3 `^8.1`, `pest` 3.8.7 `^8.2.0`. Salvedad: la documentación de Laravel 12 dice "PHP >= 8.2", que es un piso, no una declaración explícita de que 8.4 esté soportado.
+- **Railway/Nixpacks: no se pudo verificar con certeza.** Nixpacks agregó soporte de 8.4 en la versión 1.33.0, y el error "No version available for php 8.4.0" que aparecía en Railway quedó resuelto en enero de 2026 (era un problema de formato de la restricción: `^8.4` en vez de `^8.4.0`). Pero: el proyecto **nunca se desplegó en Railway**, así que no hay contra qué probarlo; y la documentación de Railway hoy dice que usan **Railpack**, no Nixpacks, mientras `railway.json` fija `"builder": "NIXPACKS"` explícitamente. No hay forma de confirmar desde acá qué versión de Nixpacks corre Railway ni cómo resuelve el caso.
+
+Como una de las dos verificaciones no da con certeza, **el proyecto queda en 8.3 y no se tocó ni `composer.json` ni los documentos**.
+
+Dos hallazgos del camino, los dos anotados como pendientes:
+
+- **`config.platform.php` no controla la versión de producción.** Es una opción de resolución de dependencias de Composer. Nixpacks elige el PHP a partir de `require.php`, que hoy es `"^8.3"` — y eso **permite 8.4**. O sea que producción podría levantar con 8.4 mientras CI prueba sobre 8.3, sin que nada lo avise (pendiente 16).
+- **`railway.json` arranca con `php artisan serve`**, que es el servidor de desarrollo de PHP: un solo proceso, sin supervisión ni concurrencia real. Conviene revisarlo antes del primer despliegue (pendiente 17).
+
+**Para alinear el entorno local con el proyecto**
+
+En esta máquina Herd tiene instalado solo php84 y resuelve `php` a 8.4.23. Para que coincida con el 8.3 del proyecto y de CI:
+
+1. Abrir Herd → sección **PHP / Versions** → botón **Install** junto a **8.3** (tarda dos o tres minutos). La instalación de versiones se hace desde la interfaz.
+2. Después, en cualquier terminal: `herd use 8.3`
+3. Verificar: `php -v` tiene que responder `PHP 8.3.x`.
+
+Si preferís no mover el PHP global —hay otros dos sitios en Herd, `cuentas-corrientes` y `saas-hotel`, que hoy corren con 8.4—, la alternativa es aislar solo este proyecto, desde su carpeta:
+
+```
+herd link catalina-portfolio
+herd isolate 8.3
+```
+
+Con esa variante, los comandos de este proyecto se corren como `herd php artisan test` y `herd composer install`, que usan la versión aislada; `php` a secas sigue siendo el global.
+
+**Pendiente o roto**
+
+- Railway y Cloudflare: sin tocar, sin credenciales.
+- Accesibilidad en 93; los tres focos que quedan son de fucsia y los decide Catalina (pendiente 13).
+- El nuevo malva espera aprobación visual (pendiente 14).
+- Navegadores reales: sigue sin verificarse (pendiente 11).
+
+**Próximo paso**
+
+Mergear el PR #1 a `develop` y aprovisionar Railway y Cloudflare.
+
+---
 
 ### 1 de agosto de 2026 — Primer commit del código: rama `fase/0-3-fundaciones`
 
