@@ -331,11 +331,11 @@ Ambos valores deben coincidir. Si divergen, el `composer.lock` se genera contra 
 
 | Entorno | Rama | Dominio | Base de datos | Ejecución |
 |---|---|---|---|---|
-| Local | — | `.test` de Herd | PostgreSQL 16 nativo | Herd + Redis |
+| Local | — | `.test` de Herd | PostgreSQL 16 nativo | Herd |
 | Staging | `develop` | `staging.dominio` | Complemento de Railway | Nixpacks |
 | Producción | `main` | `dominio` | Complemento de Railway, con respaldos | Nixpacks |
 
-**Entorno local.** Laravel Herd para PHP y el servidor web, PostgreSQL 16 instalado de forma nativa y Redis. Sin Docker y sin WSL2.
+**Entorno local.** Laravel Herd para PHP y el servidor web, PostgreSQL 16 instalado de forma nativa. Sin Docker y sin WSL2. Redis no se instala en local: corre solo en Railway (sección 7.5), porque a diferencia de SQLite contra PostgreSQL, no hay una clase de bug que quede oculta por resolver colas y caché en línea en desarrollo.
 
 **PostgreSQL también en local, no SQLite.** Es lo que hace visibles en desarrollo los problemas de las reglas 1 y 2 de la sección 3.3. Usar SQLite localmente los oculta hasta el despliegue.
 
