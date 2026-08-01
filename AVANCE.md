@@ -79,15 +79,54 @@ Decisiones tomadas que condicionan el desarrollo. Si una se revierte, se anota e
 | 10 | UI para que un cliente active su propio segundo factor (el campo y el servicio ya existen; RF-93 lo pide opcional, pero no hay pantalla para eso todavía) | 1 | Baja |
 | 11 | Verificar el comportamiento real en Chrome, Safari, Firefox y Edge. Lighthouse ya corrió local en headless (ver entrada del 01/08/2026): queda el recorrido manual en navegadores reales | 2 | Alta |
 | ~~12~~ | ~~Correr el workflow de integración continua al menos una vez~~ **Resuelto el 01/08/2026**: PR #1 hacia `develop`, los trece pasos en verde | 0 | — |
-| 13 | Subir la accesibilidad del portfolio de 93 a ≥95. Ya no depende de malva: los focos que quedan son fucsia `#e4006e` sobre porcelana (4,33:1) y blanco con opacidad sobre fucsia (2,97:1 y 2,73:1). Los tres tocan la identidad visual, así que lo decide Catalina | 2 | Media |
+| 13 | Subir la accesibilidad del portfolio de 93 a ≥95. **Queda un solo foco**: el rótulo del hero, fucsia `#e4006e` sobre porcelana, 4,33:1. Los otros tres ya se resolvieron. Este exige tocar fucsia o el tamaño de fuente, así que lo decide Catalina | 2 | Media |
 | 14 | Aprobación visual del nuevo malva `#866a78` por parte de Catalina | 2 | Media |
 | 15 | Alinear el PHP local con el del proyecto: Herd resuelve `php` a 8.4.23 y el proyecto está fijado en 8.3. Comando en la entrada de bitácora del 01/08/2026 | 0 | Media |
-| 16 | `composer.json` declara `"php": "^8.3"`, que permite 8.4. Nixpacks resuelve la versión de producción desde ahí, no desde `config.platform.php`: **producción podría levantar con 8.4 mientras CI prueba sobre 8.3**. Decidir si se cierra a `~8.3.0` o si se sube todo a 8.4 | 0 | Alta |
-| 17 | `railway.json` arranca con `php artisan serve`, que es el servidor de desarrollo de PHP y no está pensado para producción (un solo proceso, sin supervisión). Revisar antes de desplegar | 0 | Alta |
+| ~~16~~ | ~~`composer.json` declaraba `"php": "^8.3"`, que permitía que producción levantara con 8.4~~ **Resuelto el 01/08/2026**: la restricción pasó a `"php": "8.3.*"` | 0 | — |
+| 17 | **Reemplazar el comando de arranque de `railway.json` por uno apto para producción antes del primer despliegue real.** Hoy usa `php artisan serve`, que es el servidor de desarrollo embebido de PHP: un solo proceso, sin supervisión ni concurrencia real | 0 | Alta |
+| 18 | Discrepancias entre `docs/06-manual-de-marca.md` y lo construido, relevadas el 01/08/2026 y no corregidas: el punto de estado del listado de videos es un tercer elemento circular fuera de las dos excepciones que admite el manual; un hexadecimal suelto en `configurar-segundo-factor.blade.php`; `welcome.blade.php` sigue siendo la portada por defecto de Laravel; y no hay helper de formato numérico argentino para la Fase 8 | 2 | Baja |
 
 ---
 
 ## Bitácora
+
+### 1 de agosto de 2026 — El manual de marca entra al repositorio; contraste, PHP y Railway
+
+**Qué se hizo**
+
+- Se versionó `docs/06-manual-de-marca.md`, que existía en la documentación del proyecto pero nunca se había comiteado. Queda corregida la observación de la entrada anterior, que lo daba por inexistente: no existía **en el repositorio**, que es distinto.
+- Se sincronizó el manual con el valor nuevo de malva, en los dos lugares donde aparecía: la tabla de paleta (sección 2) y el bloque de tokens (sección 8), los dos ahora en `#866A78`. Se agregó al pie de la tabla una nota que remite a la entrada de bitácora donde está el cálculo y el estado de aprobación pendiente. **El manual y `resources/css/app.css` coinciden.**
+- Se resolvieron los dos focos de contraste que no tocaban la paleta: el rótulo de `#contacto` pasó de `rgba(255,255,255,.75)` a blanco pleno, y `.via .r` perdió su `opacity:.7`. Blanco sobre fucsia da **4,64:1**, por encima del mínimo. Los dos desaparecieron de la auditoría de Lighthouse. **Queda un solo foco**: el rótulo del hero, fucsia sobre porcelana (4,33:1), que no se tocó porque espera aprobación junto con malva.
+- La accesibilidad sigue marcando **93**: la auditoría `color-contrast` es binaria y un solo nodo en falta la mantiene en rojo. La lista pasó de seis elementos a uno.
+- `composer.json` pasó de `"php": "^8.3"` a `"php": "8.3.*"`, que cierra la puerta a que producción levante con 8.4 mientras CI prueba sobre 8.3 (pendiente 16, ahora resuelto). Composer resolvió sin conflictos: "Nothing to modify in lock file". El `composer.lock` solo cambió el `content-hash` y esa línea; ningún paquete se movió de versión.
+
+**Repaso del manual contra lo construido (fases 0 a 3)**
+
+Cumple: el enlace de Google Fonts coincide exactamente con el de la sección 8; no hay pesos negrita en ningún lado; no hay una sola `box-shadow`; el espaciado de secciones es 110/32 px y el ancho máximo 1180 px, como pide la sección 4; la tira de la portada corre en 34 s; los íconos son los cuatro caracteres tipográficos que fija la sección 5; hay bloque `prefers-reduced-motion`; y la voz respeta voseo, sin exclamaciones ni emoticones.
+
+Discrepancias relevadas, **ninguna corregida** (pendiente 18):
+
+1. **Tercer elemento circular.** `.punto`, el indicador de publicado del listado de videos, usa `border-radius: 50%`. La sección 4 admite exactamente dos excepciones: el círculo del día actual en el calendario y el botón de reproducción. El punto existe en el mockup, así que lo que falta es que el manual lo contemple, no que el código se haya desviado.
+2. **Hexadecimal suelto en una plantilla.** `configurar-segundo-factor.blade.php` tiene `style="background:#fff;…"` en línea. La sección 8 dice que no se escriben hexadecimales sueltos en las plantillas.
+3. **`welcome.blade.php` sigue en el repositorio.** Es la portada por defecto de Laravel, con su propio bundle de Tailwind embebido y una estética que no tiene nada que ver con la marca. No está enrutada —`/` va a `PortfolioController`—, pero quedó del andamiaje inicial.
+4. **No hay formato numérico argentino.** La sección 7 pide 184.200 y 12,4. Los contadores del panel imprimen enteros crudos. Hoy no se nota porque son números de una o dos cifras, pero no existe el mecanismo, y la Fase 8 es de métricas.
+5. **Sin verificar a 360 px.** La lista de la sección 9 lo exige; el corte más chico del CSS es 560 px. No se puede confirmar desde el CSS solo, hace falta probarlo.
+6. **Rótulos en plural.** Los contadores dicen "Cargados", "Publicados". La sección 7 pide rótulos en singular y sin artículo. Discutible: esos rótulos nombran una cantidad, no un campo.
+
+**Decisiones tomadas**
+
+- No se tocó `railway.json`, por instrucción expresa. Solo quedó anotado como pendiente 17.
+
+**Pendiente o roto**
+
+- Las seis discrepancias del manual, sin corregir y a la espera de decisión.
+- El rótulo del hero y la aprobación visual de malva.
+
+**Próximo paso**
+
+Mergear el PR #1 a `develop`.
+
+---
 
 ### 1 de agosto de 2026 — Contraste de malva, CI en verde y decisión sobre PHP 8.4
 
